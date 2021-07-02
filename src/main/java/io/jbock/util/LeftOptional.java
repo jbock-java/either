@@ -190,8 +190,8 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
     @Override
     public String toString() {
         return isPresent()
-                ? String.format("OptionalLeft[%s]", orElseThrow())
-                : "Optional.empty";
+                ? String.format("LeftOptional[%s]", orElseThrow())
+                : "LeftOptional.empty";
     }
 
     /**

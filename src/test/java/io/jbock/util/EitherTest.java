@@ -1,5 +1,6 @@
 package io.jbock.util;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -7,6 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
+
+    @Test
+    void testEquals() {
+        new EqualsTester()
+                .addEqualityGroup(Either.right("1"), Either.right("1"))
+                .addEqualityGroup(Either.right("2"), Either.right("2"))
+                .testEquals();
+    }
+
+    @Test
+    void testToString() {
+        assertEquals("Right[1]", Either.right("1").toString());
+        assertEquals("Left[1]", Either.left("1").toString());
+    }
 
     @Test
     void testGetLeft() {
