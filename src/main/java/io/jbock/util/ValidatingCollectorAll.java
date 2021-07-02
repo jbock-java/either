@@ -17,63 +17,63 @@ import java.util.stream.Collector;
  */
 class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, ValidatingCollectorAll.Acc<L, R>, Either<List<L>, List<R>>> {
 
-  static final class Acc<L, R> {
+    static final class Acc<L, R> {
 
-    private final List<L> left = new ArrayList<>();
-    private final List<R> right = new ArrayList<>();
+        private final List<L> left = new ArrayList<>();
+        private final List<R> right = new ArrayList<>();
 
-    void accumulate(Either<L, R> either) {
-      if (left.isEmpty()) {
-        either.accept(left::add, right::add);
-      } else {
-        either.acceptLeft(left::add);
-      }
+        void accumulate(Either<L, R> either) {
+            if (left.isEmpty()) {
+                either.accept(left::add, right::add);
+            } else {
+                either.acceptLeft(left::add);
+            }
+        }
+
+        Acc<L, R> combine(Acc<L, R> other) {
+            if (!left.isEmpty()) {
+                left.addAll(other.left);
+                return this;
+            }
+            if (!other.left.isEmpty()) {
+                other.left.addAll(left);
+                return other;
+            }
+            right.addAll(other.right);
+            return this;
+        }
+
+        Either<List<L>, List<R>> finish() {
+            if (left.isEmpty()) {
+                return Either.right(right);
+            } else {
+                return Either.left(left);
+            }
+        }
     }
 
-    Acc<L, R> combine(Acc<L, R> other) {
-      if (!left.isEmpty()) {
-        left.addAll(other.left);
-        return this;
-      }
-      if (!other.left.isEmpty()) {
-        other.left.addAll(left);
-        return other;
-      }
-      right.addAll(other.right);
-      return this;
+    @Override
+    public Supplier<Acc<L, R>> supplier() {
+        return Acc::new;
     }
 
-    Either<List<L>, List<R>> finish() {
-      if (left.isEmpty()) {
-        return Either.right(right);
-      } else {
-        return Either.left(left);
-      }
+    @Override
+    public BiConsumer<Acc<L, R>, Either<L, R>> accumulator() {
+        return Acc::accumulate;
     }
-  }
 
-  @Override
-  public Supplier<Acc<L, R>> supplier() {
-    return Acc::new;
-  }
+    @Override
+    public BinaryOperator<Acc<L, R>> combiner() {
+        return Acc::combine;
+    }
 
-  @Override
-  public BiConsumer<Acc<L, R>, Either<L, R>> accumulator() {
-    return Acc::accumulate;
-  }
+    @Override
+    public Function<Acc<L, R>, Either<List<L>, List<R>>> finisher() {
+        return Acc::finish;
+    }
 
-  @Override
-  public BinaryOperator<Acc<L, R>> combiner() {
-    return Acc::combine;
-  }
-
-  @Override
-  public Function<Acc<L, R>, Either<List<L>, List<R>>> finisher() {
-    return Acc::finish;
-  }
-
-  @Override
-  public Set<Characteristics> characteristics() {
-    return Set.of();
-  }
+    @Override
+    public Set<Characteristics> characteristics() {
+        return Set.of();
+    }
 }
