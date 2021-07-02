@@ -2,29 +2,27 @@ package io.jbock.util;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
 
     @Test
-    void testSingleLeft() {
-        Either<String, Integer> hi = Either.left("hi");
-        Either<String, List<Integer>> either = Stream.of(hi).collect(Either.toValidList());
+    void testGetLeft() {
+        Either<String, ?> either = Either.left("1");
         assertTrue(either.isLeft());
-        either.acceptLeft(l -> assertEquals("hi", l));
+        assertFalse(either.isRight());
+        assertEquals(LeftOptional.of("1"), either.getLeft());
+        assertEquals(Optional.empty(), either.getRight());
     }
 
     @Test
-    void testSingleRight() {
-        Either<String, List<Integer>> either = Stream.<Either<String, Integer>>of(
-                Either.right(5),
-                Either.right(6),
-                Either.right(7)).collect(Either.toValidList());
+    void testGetRight() {
+        Either<?, String> either = Either.right("1");
         assertTrue(either.isRight());
-        either.acceptRight(r -> assertEquals(List.of(5, 6, 7), r));
+        assertFalse(either.isLeft());
+        assertEquals(Optional.of("1"), either.getRight());
+        assertEquals(LeftOptional.empty(), either.getLeft());
     }
 }

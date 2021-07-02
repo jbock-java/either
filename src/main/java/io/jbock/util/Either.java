@@ -7,11 +7,12 @@ import java.util.stream.Collector;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
- * will be either be a "Left" or a "Right",
+ * can be either be a "Left", containing a LHS value or a "Right" containing a RHS value,
  * but not "none" or "both".
- * An Either can be used to express a success or failure case. By convention,
- * Right is used to store a success value, and Left is used to store a failure
- * value.
+ *
+ * <p>An Either can be used to express a success or failure case. By convention,
+ * a Right represents the result of a successful computation,
+ * and a Left represents some kind of failure value.
  *
  * @param <L> the type of the LHS value
  * @param <R> the type of the RHS value
@@ -25,7 +26,7 @@ public abstract class Either<L, R> {
      * Constructs a Left instance containing the given
      * non-{@code null} value.
      *
-     * @param value the LHS value, usually some kind of failure object
+     * @param value the LHS value
      * @param <L> the type of the LHS value
      * @param <R> an arbitrary RHS type
      * @return a Left containing the LHS value
@@ -50,9 +51,9 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Returns a collector that collect the RHS values in the stream into a Right,
+     * Returns a collector that collects the RHS values in the stream into a Right,
      * if there are no Left instances in the stream,
-     * or, if the stream contains a Left, a Left containing the first LHS value.
+     * or, if the stream contains a Left, into a Left containing the first LHS value.
      *
      * @param <L> the LHS type
      * @param <R> the RHS type
@@ -64,9 +65,9 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Returns a collector that collect the RHS values in the stream into a Right,
+     * Returns a collector that collects the RHS values in the stream into a Right,
      * if there are no Left instances in the stream,
-     * or, if the stream contains a Left, a Left containing all LHS values in the original order.
+     * or, if the stream contains a Left, into a Left containing all LHS values, in the original order.
      *
      * @param <L> the LHS type
      * @param <R> the RHS type
@@ -78,7 +79,8 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * If this is a Right, returns a Right containing the result of applying the mapper function to the RHS value.
+     * If this is a Right, returns a Right containing the result of applying
+     * the mapper function to the RHS value.
      * Otherwise returns a Left instance containing the LHS value.
      *
      * @param rightMapper the function to apply to the RHS value, if this is a Right
