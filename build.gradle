@@ -1,0 +1,123 @@
+plugins {
+    id('java')
+    id('maven-publish')
+    id('signing')
+}
+
+group = 'io.github.jbock-java'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
+    options.compilerArgs << '--release'
+    options.compilerArgs << '11'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(AbstractArchiveTask) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = true
+}
+
+dependencies {
+    testImplementation('org.junit.jupiter:junit-jupiter:5.7.1')
+}
+
+jar {
+    manifest {
+        attributes(
+                'Implementation-Version': project.properties['version']
+        )
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events('failed')
+    }
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier.set('javadoc')
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier.set('sources')
+}
+
+artifacts {
+    archives(javadocJar, sourcesJar)
+}
+
+// https://central.sonatype.org/pages/gradle.html
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'either'
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom {
+                name = 'either'
+                packaging = 'jar'
+                description = 'jbock::either'
+                url = 'https://github.com/jbock-java/either'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'various'
+                        name = 'various'
+                        email = 'jbock-java@gmx.de'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/jbock-java/either.git'
+                    developerConnection = 'scm:git:https://github.com/jbock-java/either.git'
+                    url = 'https://github.com/jbock-java/either'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username = System.getenv('OSS_USER')
+                password = System.getenv('OSS_PASS')
+            }
+        }
+    }
+}
+
+// https://docs.gradle.org/current/userguide/signing_plugin.html
+signing {
+    def signingKey = findProperty('signingKey')
+    def signingPassword = findProperty('signingPassword')
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+}
