@@ -1,4 +1,4 @@
-package net.jbock.either;
+package io.jbock.util;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;

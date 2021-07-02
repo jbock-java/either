@@ -1,4 +1,4 @@
-package net.jbock.either;
+package io.jbock.util;
 
 import org.junit.jupiter.api.Test;
 

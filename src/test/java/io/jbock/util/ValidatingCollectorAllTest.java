@@ -1,11 +1,11 @@
-package net.jbock.either;
+package io.jbock.util;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static net.jbock.either.Either.left;
-import static net.jbock.either.Either.right;
+import static io.jbock.util.Either.left;
+import static io.jbock.util.Either.right;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ValidatingCollectorAllTest {

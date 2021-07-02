@@ -1,4 +1,4 @@
-package net.jbock.either;
+package io.jbock.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,45 +10,42 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /**
- * A collector that implements {@link Either#toValidListAll()}.
+ * A collector that implements {@link Either#toValidList()}.
  *
  * @param <L> the LHS type
  * @param <R> the RHS type
  */
-class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, ValidatingCollectorAll.Acc<L, R>, Either<List<L>, List<R>>> {
+class ValidatingCollector<L, R> implements Collector<Either<L, R>, ValidatingCollector.Acc<L, R>, Either<L, List<R>>> {
 
   static final class Acc<L, R> {
 
-    private final List<L> left = new ArrayList<>();
+    private L left;
     private final List<R> right = new ArrayList<>();
 
     void accumulate(Either<L, R> either) {
-      if (left.isEmpty()) {
-        either.accept(left::add, right::add);
-      } else {
-        either.acceptLeft(left::add);
+      if (left != null) {
+        return;
       }
+      either.accept(l -> left = l,
+          right::add);
     }
 
     Acc<L, R> combine(Acc<L, R> other) {
-      if (!left.isEmpty()) {
-        left.addAll(other.left);
+      if (left != null) {
         return this;
       }
-      if (!other.left.isEmpty()) {
-        other.left.addAll(left);
+      if (other.left != null) {
         return other;
       }
       right.addAll(other.right);
       return this;
     }
 
-    Either<List<L>, List<R>> finish() {
-      if (left.isEmpty()) {
-        return Either.right(right);
-      } else {
+    Either<L, List<R>> finish() {
+      if (left != null) {
         return Either.left(left);
       }
+      return Either.right(right);
     }
   }
 
@@ -68,7 +65,7 @@ class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, Validating
   }
 
   @Override
-  public Function<Acc<L, R>, Either<List<L>, List<R>>> finisher() {
+  public Function<Acc<L, R>, Either<L, List<R>>> finisher() {
     return Acc::finish;
   }
 

@@ -1,13 +1,9 @@
-package net.jbock.either;
+package io.jbock.util;
 
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static net.jbock.either.Either.left;
-import static net.jbock.either.Either.narrow;
-import static net.jbock.either.Either.right;
 
 /**
  * A container object which may or may not contain a non-{@code null} value.
@@ -163,7 +159,7 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
    *         otherwise a Right containing the result of invoking {@code supplier.get()}
    */
   public <R> Either<L, R> orElseRight(Supplier<? extends R> supplier) {
-    return flatMapRight(() -> right(supplier.get()));
+    return flatMapRight(() -> Either.right(supplier.get()));
   }
 
   /**
@@ -179,9 +175,9 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
   public <R> Either<L, R> flatMapRight(
       Supplier<? extends Either<? extends L, ? extends R>> supplier) {
     if (isPresent()) {
-      return left(orElseThrow());
+      return Either.left(orElseThrow());
     }
-    return narrow(supplier.get());
+    return Either.narrow(supplier.get());
   }
 
   /**

@@ -1,4 +1,4 @@
 module net.jbock {
 
-  exports net.jbock.either;
+  exports io.jbock.util;
 }
