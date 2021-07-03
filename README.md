@@ -2,7 +2,7 @@
 
 ### jbock.util::either
 
-`Either` is a close relative of `Optional`, but can have other "failure" states than only *empty*.
+`Either` is a close relative of `Optional`, but can have different "failure" states, other than only *empty*.
 It has many useful applications. For example, reporting error conditions from stream operations.
 
 There are various good alternatives,
