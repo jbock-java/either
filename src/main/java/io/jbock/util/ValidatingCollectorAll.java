@@ -36,7 +36,6 @@ class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, Validating
                 return this;
             }
             if (!other.left.isEmpty()) {
-                other.left.addAll(left);
                 return other;
             }
             right.addAll(other.right);
