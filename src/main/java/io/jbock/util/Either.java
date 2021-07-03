@@ -247,7 +247,7 @@ public abstract class Either<L, R> {
      * @param either an either
      * @param <L> the type of the LHS value
      * @param <R> the type of the RHS value
-     * @return the given {@code either} instance
+     * @return an equivalent {@code Either} instance
      */
     @SuppressWarnings("unchecked")
     static <L, R> Either<L, R> narrow(Either<? extends L, ? extends R> either) {

@@ -69,24 +69,23 @@ public final class Optional<R> extends AbstractOptional<R> {
 
     /**
      * If a value is present, and the value matches the given predicate,
-     * returns an {@code Optional} describing the value, otherwise returns an
+     * returns an {@code Optional} containing the value, otherwise returns an
      * empty {@code Optional}.
      *
      * @param predicate the predicate to apply to a value, if present
-     * @return an {@code Optional} describing the value of this
+     * @return an {@code Optional} containing the value of this
      *         {@code Optional}, if a value is present and the value matches the
      *         given predicate, otherwise an empty {@code Optional}
-     * @throws NullPointerException if the predicate is {@code null}
      */
     public Optional<R> filter(Predicate<? super R> predicate) {
-        if (!isPresent()) {
+        if (isEmpty()) {
             return this;
         }
         return predicate.test(orElseThrow()) ? this : empty();
     }
 
     /**
-     * If a value is present, returns an {@code Optional} describing
+     * If a value is present, returns an {@code Optional} containing
      * the result of applying the given mapping function to
      * the value, otherwise returns an empty {@code Optional}.
      *
@@ -95,13 +94,13 @@ public final class Optional<R> extends AbstractOptional<R> {
      *
      * @param mapper the mapping function to apply to a value, if present
      * @param <R2> The type of the value returned from the mapping function
-     * @return an {@code Optional} describing the result of applying a mapping
-     *         function to the value of this {@code Optional}, if a value is
+     * @return an {@code Optional} containing the result of applying a mapping
+     *         function to the value, if a value is
      *         present, otherwise an empty {@code Optional}
      * @throws NullPointerException if the mapping function returns {@code null}
      */
     public <R2> Optional<R2> map(Function<? super R, ? extends R2> mapper) {
-        if (!isPresent()) {
+        if (isEmpty()) {
             return empty();
         }
         return of(mapper.apply(orElseThrow()));
@@ -119,12 +118,10 @@ public final class Optional<R> extends AbstractOptional<R> {
      *         is present, otherwise an empty {@code Optional}
      */
     public <R2> Optional<R2> flatMap(Function<? super R, Optional<? extends R2>> mapper) {
-        if (!isPresent()) {
+        if (isEmpty()) {
             return empty();
         }
-        @SuppressWarnings("unchecked")
-        Optional<R2> result = (Optional<R2>) mapper.apply(orElseThrow());
-        return result;
+        return narrow(mapper.apply(orElseThrow()));
     }
 
     /**
@@ -141,9 +138,7 @@ public final class Optional<R> extends AbstractOptional<R> {
         if (isPresent()) {
             return this;
         }
-        @SuppressWarnings("unchecked")
-        Optional<R> result = (Optional<R>) supplier.get();
-        return result;
+        return narrow(supplier.get());
     }
 
     /**
@@ -212,5 +207,20 @@ public final class Optional<R> extends AbstractOptional<R> {
 
         Optional<?> other = (Optional<?>) obj;
         return isEqual(other);
+    }
+
+    /**
+     * Internal helper method that narrows the type of {@code Optional<? extends T>} to
+     * {@code Optional<T>}.
+     *
+     * @param optional an optional
+     * @param <T> the type of the value
+     * @return an equivalent {@code Optional} instance
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Optional<T> narrow(Optional<? extends T> optional) {
+        // The cast is just an optimization of the following:
+        // return optional.map(Optional::<T>of).orElse(Optional.empty())
+        return (Optional<T>) optional;
     }
 }

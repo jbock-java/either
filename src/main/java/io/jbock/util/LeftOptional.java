@@ -70,33 +70,32 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
 
     /**
      * If a value is present, and the value matches the given predicate,
-     * returns a {@code LeftOptional} describing the value, otherwise returns an
+     * returns a {@code LeftOptional} containing the value, otherwise returns an
      * empty {@code LeftOptional}.
      *
      * @param predicate the predicate to apply to a value, if present
-     * @return a {@code LeftOptional} describing the value of this
+     * @return a {@code LeftOptional} containing the value of this
      *         {@code LeftOptional}, if a value is present and the value matches the
      *         given predicate, otherwise an empty {@code LeftOptional}
-     * @throws NullPointerException if the predicate is {@code null}
      */
     public LeftOptional<L> filter(Predicate<? super L> predicate) {
-        if (!isPresent()) {
+        if (isEmpty()) {
             return this;
         }
         return predicate.test(orElseThrow()) ? this : empty();
     }
 
     /**
-     * If a value is present, returns an {@code LeftOptional} containing
+     * If a value is present, returns a {@code LeftOptional} containing
      * the result of applying the given mapping function to
      * the value, otherwise returns an empty {@code LeftOptional}.
      *
-     * <p>If the mapping function returns a {@code null} result then this method
-     * throws a {@code NullPointerException}.
+     * <p>If the mapping function returns a {@code null} result,
+     * then this method throws a {@code NullPointerException}.
      *
      * @param mapper the mapping function to apply to a value, if present
      * @param <L2> The type of the value returned from the mapping function
-     * @return a {@code LeftOptional} describing the result of applying a mapping
+     * @return a {@code LeftOptional} containing the result of applying a mapping
      *         function to the value, if a value is
      *         present, otherwise an empty {@code LeftOptional}
      * @throws NullPointerException if the mapping function returns {@code null}
@@ -123,9 +122,7 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
         if (isEmpty()) {
             return empty();
         }
-        @SuppressWarnings("unchecked")
-        LeftOptional<L2> result = (LeftOptional<L2>) mapper.apply(orElseThrow());
-        return result;
+        return narrow(mapper.apply(orElseThrow()));
     }
 
     /**
@@ -142,9 +139,7 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
         if (isPresent()) {
             return this;
         }
-        @SuppressWarnings("unchecked")
-        LeftOptional<L> result = (LeftOptional<L>) supplier.get();
-        return result;
+        return narrow(supplier.get());
     }
 
     /**
@@ -213,5 +208,20 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
 
         LeftOptional<?> other = (LeftOptional<?>) obj;
         return isEqual(other);
+    }
+
+    /**
+     * Internal helper method that narrows the type of {@code LeftOptional<? extends T>} to
+     * {@code LeftOptional<T>}.
+     *
+     * @param optional an optional
+     * @param <T> the type of the value
+     * @return an equivalent {@code LeftOptional} instance
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> LeftOptional<T> narrow(LeftOptional<? extends T> optional) {
+        // The cast is just an optimization of the following:
+        // return optional.map(LeftOptional::<T>of).orElse(LeftOptional.empty())
+        return (LeftOptional<T>) optional;
     }
 }
