@@ -115,7 +115,7 @@ public abstract class Either<L, R> {
      * @return filter result
      */
     public final Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate) {
-        return flatMap(r -> predicate.apply(r).orElseRight(() -> r));
+        return fold(Either::left, r -> narrow(predicate.apply(r).orElseRight(() -> r)));
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class Either<L, R> {
      *         the result of applying {@code mapper} to the LHS value
      */
     public final <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
-        return narrow(flip().map(mapper).flip());
+        return fold(l -> left(mapper.apply(l)), Either::right);
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class Either<L, R> {
      */
     public final <L2> Either<L2, R> flatMapLeft(
             Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
-        return narrow(flip().flatMap(l -> mapper.apply(l).flip()).flip());
+        return fold(l -> narrow(mapper.apply(l)), Either::right);
     }
 
     /**
@@ -168,8 +168,6 @@ public abstract class Either<L, R> {
     public abstract <U> U fold(
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper);
-
-    abstract Either<R, L> flip();
 
     /**
      * If this is a Left, performs the {@code leftAction} with the LHS value.
@@ -242,8 +240,18 @@ public abstract class Either<L, R> {
      */
     public abstract Optional<R> getRight();
 
+    /**
+     * Narrows a {@code Either<? extends L, ? extends R>} to {@code Either<L, R>}.
+     *
+     * @param either an either
+     * @param <L> the type of the LHS value
+     * @param <R> the type of the RHS value
+     * @return the given {@code either} instance
+     */
     @SuppressWarnings("unchecked")
     static <L, R> Either<L, R> narrow(Either<? extends L, ? extends R> either) {
+        // The cast is just an optimization of the following:
+        // return either.fold(Either::left, Either::right)
         return (Either<L, R>) either;
     }
 
