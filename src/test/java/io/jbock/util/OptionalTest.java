@@ -65,6 +65,8 @@ class OptionalTest {
     void testFilter() {
         assertEquals(Optional.empty(), Optional.of("1").filter(s -> false));
         assertEquals(Optional.of("1"), Optional.of("1").filter(s -> true));
+        assertEquals(Optional.empty(), Optional.empty().filter(s -> false));
+        assertEquals(Optional.empty(), Optional.empty().filter(s -> true));
     }
 
     @Test

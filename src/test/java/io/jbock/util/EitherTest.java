@@ -19,6 +19,10 @@ class EitherTest {
                 .addEqualityGroup(Either.right("1"), Either.right("1"))
                 .addEqualityGroup(Either.right("2"), Either.right("2"))
                 .testEquals();
+        new EqualsTester()
+                .addEqualityGroup(Either.left("1"), Either.left("1"))
+                .addEqualityGroup(Either.left("2"), Either.left("2"))
+                .testEquals();
     }
 
     @Test

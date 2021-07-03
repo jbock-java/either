@@ -7,6 +7,7 @@ import java.util.List;
 import static io.jbock.util.Either.left;
 import static io.jbock.util.Either.right;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ValidatingCollectorTest {
 
@@ -29,6 +30,11 @@ class ValidatingCollectorTest {
     @Test
     void testRight() {
         assertEquals(right(List.of(1, 2, 3)), apply(List.of(right(1), right(2), right(3))));
+    }
+
+    @Test
+    void testFactoryMethod() {
+        assertTrue(Either.toValidListAll() instanceof ValidatingCollectorAll);
     }
 
     private Either<String, List<Integer>> apply(List<Either<String, Integer>> data) {

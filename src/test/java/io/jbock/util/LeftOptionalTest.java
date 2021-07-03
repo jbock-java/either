@@ -49,6 +49,8 @@ class LeftOptionalTest {
     void testFilter() {
         assertEquals(LeftOptional.empty(), LeftOptional.of("1").filter(s -> false));
         assertEquals(LeftOptional.of("1"), LeftOptional.of("1").filter(s -> true));
+        assertEquals(LeftOptional.empty(), LeftOptional.empty().filter(s -> false));
+        assertEquals(LeftOptional.empty(), LeftOptional.empty().filter(s -> true));
     }
 
     @Test
