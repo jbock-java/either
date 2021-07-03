@@ -1,5 +1,5 @@
 /**
- * jbock::either
+ * Functional error handling for Java
  */
 module io.jbock.util {
 

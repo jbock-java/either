@@ -56,4 +56,20 @@ class LeftOptionalTest {
         assertEquals(LeftOptional.of(1), LeftOptional.of("1").map(s -> 1));
         assertEquals(LeftOptional.empty(), LeftOptional.empty().map(s -> 1));
     }
+
+    @Test
+    void testFlatMap() {
+        assertEquals(LeftOptional.of(2), LeftOptional.of("1").flatMap(s -> LeftOptional.of(2)));
+        assertEquals(LeftOptional.empty(), LeftOptional.of("1").flatMap(s -> LeftOptional.empty()));
+        assertEquals(LeftOptional.empty(), LeftOptional.empty().flatMap(s -> LeftOptional.of(2)));
+        assertEquals(LeftOptional.empty(), LeftOptional.empty().flatMap(s -> LeftOptional.empty()));
+    }
+
+    @Test
+    void testOr() {
+        assertEquals(LeftOptional.of("1"), LeftOptional.of("1").or(() -> LeftOptional.of("2")));
+        assertEquals(LeftOptional.of("1"), LeftOptional.of("1").or(LeftOptional::empty));
+        assertEquals(LeftOptional.of("2"), LeftOptional.empty().or(() -> LeftOptional.of("2")));
+        assertEquals(LeftOptional.empty(), LeftOptional.empty().or(LeftOptional::empty));
+    }
 }

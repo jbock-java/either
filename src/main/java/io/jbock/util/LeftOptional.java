@@ -126,7 +126,7 @@ public final class LeftOptional<L> extends AbstractOptional<L> {
     }
 
     /**
-     * If a value is present, returns an {@code LeftOptional} describing the value,
+     * If a value is present, returns an {@code LeftOptional} containing the value,
      * otherwise returns a {@code LeftOptional} produced by the supplier.
      *
      * @param supplier the supplier that produces a {@code LeftOptional}

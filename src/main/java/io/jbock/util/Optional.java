@@ -125,7 +125,7 @@ public final class Optional<R> extends AbstractOptional<R> {
     }
 
     /**
-     * If a value is present, returns an {@code Optional} describing the value,
+     * If a value is present, returns an {@code Optional} containing the value,
      * otherwise returns an {@code Optional} produced by the supplier.
      *
      * @param supplier the supplier that produces an {@code Optional}
