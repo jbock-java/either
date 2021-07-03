@@ -241,7 +241,8 @@ public abstract class Either<L, R> {
     public abstract Optional<R> getRight();
 
     /**
-     * Narrows a {@code Either<? extends L, ? extends R>} to {@code Either<L, R>}.
+     * Internal helper method that narrows the type of {@code Either<? extends L, ? extends R>} to
+     * {@code Either<L, R>}.
      *
      * @param either an either
      * @param <L> the type of the LHS value
