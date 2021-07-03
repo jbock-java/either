@@ -211,7 +211,6 @@ public abstract class Either<L, R> {
         }, rightAction);
     }
 
-
     /**
      * Returns {@code true} if this is a Left, otherwise {@code false}.
      *
