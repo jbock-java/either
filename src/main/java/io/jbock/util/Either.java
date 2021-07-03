@@ -23,8 +23,7 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Constructs a Left instance containing the given
-     * non-{@code null} value.
+     * Returns a Left containing the given non-{@code null} LHS value.
      *
      * @param value the LHS value
      * @param <L> the type of the LHS value
@@ -37,8 +36,7 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Constructs a Right instance containing the given
-     * non-{@code null} value.
+     * Returns a Right containing the given non-{@code null} RHS value.
      *
      * @param value the RHS value
      * @param <L> an arbitrary LHS type
@@ -51,9 +49,9 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Returns a collector that collects the RHS values in the stream into a Right,
-     * if there are no Left instances in the stream,
-     * or, if the stream contains a Left, into a Left containing the first LHS value.
+     * Returns a collector that accumulates the RHS values in the stream into a Right,
+     * if there are no Left instances in the stream.
+     * If the stream contains a Left, it accumulates a Left containing the first LHS value.
      *
      * @param <L> the LHS type
      * @param <R> the RHS type
@@ -65,9 +63,9 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Returns a collector that collects the RHS values in the stream into a Right,
-     * if there are no Left instances in the stream,
-     * or, if the stream contains a Left, into a Left containing all LHS values, in the original order.
+     * Returns a collector that accumulates a Right containing all RHS values in the original order,
+     * if there are no Left instances in the stream.
+     * If the stream contains a Left, it accumulates a Left containing all LHS values, in the original order.
      *
      * @param <L> the LHS type
      * @param <R> the RHS type
@@ -81,69 +79,70 @@ public abstract class Either<L, R> {
     /**
      * If this is a Right, returns a Right containing the result of applying
      * the mapper function to the RHS value.
-     * Otherwise returns a Left instance containing the LHS value.
+     * Otherwise returns a Left containing the LHS value.
      *
-     * @param rightMapper the function to apply to the RHS value, if this is a Right
+     * @param mapper the function to apply to the RHS value, if this is a Right
      * @param <R2> the new RHS type
      * @return an equivalent instance if this is a Left, otherwise a Right containing
-     *         the result of applying {@code rightMapper} to the RHS value
+     *         the result of applying {@code mapper} to the RHS value
      */
-    public final <R2> Either<L, R2> map(Function<? super R, ? extends R2> rightMapper) {
-        return flatMap(r -> right(rightMapper.apply(r)));
+    public final <R2> Either<L, R2> map(Function<? super R, ? extends R2> mapper) {
+        return fold(Either::left, r -> right(mapper.apply(r)));
     }
 
     /**
-     * Returns the result of applying the choice function to the RHS value if this is a Right,
-     * otherwise returns a Left instance containing the LHS value.
+     * If this is a Right, returns the result of applying the mapper function to the RHS value.
+     * Otherwise returns a Left containing the LHS value.
      *
-     * @param choice a choice function
+     * @param mapper a mapper function
      * @param <R2> the new RHS type
      * @return an equivalent instance if this is a Left, otherwise the result of
-     *         applying {@code choice} to the RHS value
+     *         applying {@code mapper} to the RHS value
      */
     public final <R2> Either<L, R2> flatMap(
-            Function<? super R, ? extends Either<? extends L, ? extends R2>> choice) {
-        return fold(Either::left, r -> narrow(choice.apply(r)));
+            Function<? super R, ? extends Either<? extends L, ? extends R2>> mapper) {
+        return fold(Either::left, r -> narrow(mapper.apply(r)));
     }
 
     /**
-     * If this is a Left, return a Left containing the LHS value.
-     * If this is a Right, applies the test function to the RHS value.
-     * If the result is empty, returns a Right containing the RHS value.
+     * If this is a Left, returns a Left containing the LHS value.
+     * If this is a Right, applies the predicate function to the RHS value.
+     * If the predicate function returns an empty result,
+     * returns a Right containing the RHS value.
      * If the result is not empty, returns a Left containing that result.
      *
-     * @param test the filter function
+     * @param predicate a function that acts as a filter predicate
      * @return filter result
      */
-    public final Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> test) {
-        return flatMap(r -> test.apply(r).orElseRight(() -> r));
+    public final Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate) {
+        return flatMap(r -> predicate.apply(r).orElseRight(() -> r));
     }
 
     /**
      * If this is a Left, returns a Left containing the result of applying the mapper function to the LHS value.
-     * Otherwise returns a Right instance containing the RHS value.
+     * Otherwise returns a Right containing the RHS value.
      *
-     * @param leftMapper the function to apply to the LHS value
+     * @param mapper the function to apply to the LHS value
      * @param <L2> the new LHS type
      * @return an equivalent instance if this is a Right, otherwise a Left containing
-     *         the result of applying {@code leftMapper} to the LHS value
+     *         the result of applying {@code mapper} to the LHS value
      */
-    public final <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> leftMapper) {
-        return narrow(flip().map(leftMapper).flip());
+    public final <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
+        return narrow(flip().map(mapper).flip());
     }
 
     /**
-     * Returns the result of applying the choice function to the LHS value if this is a Left,
-     * otherwise returns a Right instance containing the RHS value.
+     * If this is a Left, returns the result of applying the mapper function to the LHS value.
+     * Otherwise returns a Right containing the RHS value.
      *
-     * @param choice a choice function
+     * @param mapper a mapper function
      * @param <L2> the new LHS type
      * @return an equivalent instance if this is a Right, otherwise the result of
-     *         applying {@code choice} to the LHS value
+     *         applying {@code mapper} to the LHS value
      */
     public final <L2> Either<L2, R> flatMapLeft(
-            Function<? super L, ? extends Either<? extends L2, ? extends R>> choice) {
-        return narrow(flip().flatMap(l -> choice.apply(l).flip()).flip());
+            Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
+        return narrow(flip().flatMap(l -> mapper.apply(l).flip()).flip());
     }
 
     /**
