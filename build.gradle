@@ -80,7 +80,7 @@ publishing {
             pom {
                 name = 'either'
                 packaging = 'jar'
-                description = 'jbock::either'
+                description = 'Functional error handling for Java'
                 url = 'https://github.com/jbock-java/either'
 
                 licenses {
