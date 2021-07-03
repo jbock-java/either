@@ -1,7 +1,9 @@
+[![either](https://maven-badges.herokuapp.com/maven-central/io.github.jbock-java/either/badge.svg?subject=either)](https://maven-badges.herokuapp.com/maven-central/io.github.jbock-java/either)
+
 ### java::either
 
 `Either` is a close relative of `Optional`, but can have other "failure" states than only *empty*.
-It has many useful applications, like reporting error conditions from stream operations.
+It has many useful applications. For example, reporting error conditions from stream operations.
 
 There are various good alternatives,
 like [vavr](https://github.com/vavr-io/vavr), [fugue](https://bitbucket.org/atlassian/fugue/src/master/), and [lambda](https://github.com/palatable/lambda).
