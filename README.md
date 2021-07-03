@@ -6,6 +6,6 @@ It has many useful applications, like reporting error conditions from stream ope
 There are various good alternatives,
 like [vavr](https://github.com/vavr-io/vavr), [fugue](https://bitbucket.org/atlassian/fugue/src/master/), and [lambda](https://github.com/palatable/lambda).
 This particular project emphasizes interoperability with `Optional`.
-Since `Optional` can't be extended, it comes with its own copy of `java.util.Optional`,
+Since `java.util.Optional` can't be extended, it comes with its own copy `io.jbock.util.Optional`,
 with two additional methods `orElseLeft()` and `flatMapLeft()`.
 
