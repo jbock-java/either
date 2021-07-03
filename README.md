@@ -3,7 +3,7 @@
 ### jbock.util::either
 
 `Either` is a close relative of `Optional`, but can have different "failure" states, other than only *empty*.
-It has many useful applications. For example, reporting error conditions from stream operations.
+This has many useful applications. For example, an `Either` can be used to report error conditions from stream operations.
 
 There are various good alternatives,
 like [vavr](https://github.com/vavr-io/vavr), [fugue](https://bitbucket.org/atlassian/fugue/src/master/), and [lambda](https://github.com/palatable/lambda).
