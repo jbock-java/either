@@ -15,7 +15,7 @@ import java.util.stream.Collector;
  * @param <L> the LHS type
  * @param <R> the RHS type
  */
-class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, ValidatingCollectorAll.Acc<L, R>, Either<List<L>, List<R>>> {
+final class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, ValidatingCollectorAll.Acc<L, R>, Either<List<L>, List<R>>> {
 
     static final class Acc<L, R> {
 
@@ -23,10 +23,10 @@ class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, Validating
         private final List<R> right = new ArrayList<>();
 
         void accumulate(Either<L, R> either) {
-            if (left.isEmpty()) {
-                either.accept(left::add, right::add);
-            } else {
+            if (!left.isEmpty()) {
                 either.acceptLeft(left::add);
+            } else {
+                either.accept(left::add, right::add);
             }
         }
 
@@ -43,10 +43,10 @@ class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, Validating
         }
 
         Either<List<L>, List<R>> finish() {
-            if (left.isEmpty()) {
-                return Either.right(right);
-            } else {
+            if (!left.isEmpty()) {
                 return Either.left(left);
+            } else {
+                return Either.right(right);
             }
         }
     }

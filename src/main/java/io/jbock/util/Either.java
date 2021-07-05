@@ -9,11 +9,11 @@ import java.util.stream.Collector;
 /**
  * A class that acts as a container for a value of one of two types. An Either
  * can be either be a "Left", containing a LHS value or a "Right" containing a RHS value,
- * but not "none" or "both".
+ * but it cannot be "neither" or "both".
  *
  * <p>An Either can be used to express a success or failure case. By convention,
- * a Right represents the result of a successful computation,
- * and a Left represents some kind of failure value.
+ * a Right contains the result of a successful computation,
+ * and a Left contains some kind of failure object.
  *
  * @param <L> the type of the LHS value
  * @param <R> the type of the RHS value
@@ -50,9 +50,9 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Returns a collector that accumulates the RHS values in the stream into a Right,
+     * Returns a collector that accumulates a Right containing all values in the original order,
      * if there are no Left instances in the stream.
-     * If the stream contains a Left, it accumulates a Left containing the first LHS value.
+     * If the stream contains a Left, it accumulates a Left containing the first LHS value in the stream.
      *
      * @param <L> the LHS type
      * @param <R> the RHS type
@@ -64,9 +64,10 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * Returns a collector that accumulates a Right containing all RHS values in the original order,
+     * Returns a collector that accumulates a Right containing all values in the original order,
      * if there are no Left instances in the stream.
-     * If the stream contains a Left, it accumulates a Left containing all LHS values, in the original order.
+     * If the stream contains a Left, it accumulates a Left containing all LHS values in the stream,
+     * in the original order.
      *
      * @param <L> the LHS type
      * @param <R> the RHS type

@@ -142,6 +142,13 @@ class LeftOptionalTest {
     }
 
     @Test
+    void testGet() {
+        Exception x = assertThrows(NoSuchElementException.class, () -> LeftOptional.empty().get());
+        assertEquals("No value present", x.getMessage());
+        assertEquals("2", LeftOptional.of("2").get());
+    }
+
+    @Test
     void testOrElseThrowWithSupplier() throws IOException {
         Exception x = assertThrows(IOException.class, () -> LeftOptional.empty().orElseThrow(() -> new IOException("1")));
         assertEquals("1", x.getMessage());

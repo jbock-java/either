@@ -15,7 +15,7 @@ import java.util.stream.Collector;
  * @param <L> the LHS type
  * @param <R> the RHS type
  */
-class ValidatingCollector<L, R> implements Collector<Either<L, R>, ValidatingCollector.Acc<L, R>, Either<L, List<R>>> {
+final class ValidatingCollector<L, R> implements Collector<Either<L, R>, ValidatingCollector.Acc<L, R>, Either<L, List<R>>> {
 
     static final class Acc<L, R> {
 
