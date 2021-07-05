@@ -32,12 +32,6 @@ public final class LeftOptional<T> {
      * Returns an empty {@code LeftOptional} instance.  No value is present for this
      * {@code LeftOptional}.
      *
-     * @apiNote
-     * Though it may be tempting to do so, avoid testing if an object is empty
-     * by comparing with {@code ==} or {@code !=} against instances returned by
-     * {@code Optional.empty()}.  There is no guarantee that it is a singleton.
-     * Instead, use {@link #isEmpty()} or {@link #isPresent()}.
-     *
      * @param <T> The type of the non-existent value
      * @return an empty {@code LeftOptional}
      */
@@ -89,9 +83,6 @@ public final class LeftOptional<T> {
     /**
      * If a value is present, returns the value, otherwise throws
      * {@code NoSuchElementException}.
-     *
-     * @apiNote
-     * The preferred alternative to this method is {@link #orElseThrow()}.
      *
      * @return the non-{@code null} value described by this {@code LeftOptional}
      * @throws NoSuchElementException if no value is present
@@ -169,24 +160,6 @@ public final class LeftOptional<T> {
      * <p>If the mapping function returns a {@code null} result then this method
      * returns an empty {@code LeftOptional}.
      *
-     * @apiNote
-     * This method supports post-processing on {@code LeftOptional} values, without
-     * the need to explicitly check for a return status.  For example, the
-     * following code traverses a stream of URIs, selects one that has not
-     * yet been processed, and creates a path from that URI, returning
-     * an {@code Optional<Path>}:
-     *
-     * <pre>{@code
-     *     Optional<Path> p =
-     *         uris.stream().filter(uri -> !isProcessedYet(uri))
-     *                       .findFirst()
-     *                       .map(Paths::get);
-     * }</pre>
-     *
-     * Here, {@code findFirst} returns an {@code Optional<URI>}, and then
-     * {@code map} returns an {@code Optional<Path>} for the desired
-     * URI if one exists.
-     *
      * @param mapper the mapping function to apply to a value, if present
      * @param <U> The type of the value returned from the mapping function
      * @return a {@code LeftOptional} describing the result of applying a mapping
@@ -251,14 +224,6 @@ public final class LeftOptional<T> {
      * If a value is present, returns a sequential {@link Stream} containing
      * only that value, otherwise returns an empty {@code Stream}.
      *
-     * @apiNote
-     * This method can be used to transform a {@code Stream} of optional
-     * elements to a {@code Stream} of present value elements:
-     * <pre>{@code
-     *     Stream<Optional<T>> os = ..
-     *     Stream<T> s = os.flatMap(Optional::stream)
-     * }</pre>
-     *
      * @return the optional value as a {@code Stream}
      */
     public Stream<T> stream() {
@@ -305,11 +270,6 @@ public final class LeftOptional<T> {
     /**
      * If a value is present, returns the value, otherwise throws an exception
      * produced by the exception supplying function.
-     *
-     * @apiNote
-     * A method reference to the exception constructor with an empty argument
-     * list can be used as the supplier. For example,
-     * {@code IllegalStateException::new}
      *
      * @param <X> Type of the exception to be thrown
      * @param exceptionSupplier the supplying function that produces an
@@ -400,11 +360,6 @@ public final class LeftOptional<T> {
      * Returns a non-empty string representation of this {@code LeftOptional}
      * suitable for debugging.  The exact presentation format is unspecified and
      * may vary between implementations and versions.
-     *
-     * @implSpec
-     * If a value is present the result must include its string representation
-     * in the result.  Empty and present {@code LeftOptional}s must be unambiguously
-     * differentiable.
      *
      * @return the string representation of this instance
      */
