@@ -3,5 +3,5 @@
  */
 module io.jbock.util {
 
-  exports io.jbock.util;
+    exports io.jbock.util;
 }

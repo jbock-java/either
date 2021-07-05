@@ -3,7 +3,15 @@ package io.jbock.util;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LeftOptionalTest {
 
@@ -73,5 +81,70 @@ class LeftOptionalTest {
         assertEquals(LeftOptional.of("1"), LeftOptional.of("1").or(LeftOptional::empty));
         assertEquals(LeftOptional.of("2"), LeftOptional.empty().or(() -> LeftOptional.of("2")));
         assertEquals(LeftOptional.empty(), LeftOptional.empty().or(LeftOptional::empty));
+    }
+
+    @Test
+    void testIsPresent() {
+        assertTrue(LeftOptional.of("1").isPresent());
+        assertFalse(LeftOptional.empty().isPresent());
+    }
+
+    @Test
+    void testIsEmpty() {
+        assertFalse(LeftOptional.of("1").isEmpty());
+        assertTrue(LeftOptional.empty().isEmpty());
+    }
+
+    @Test
+    void testIfPresent() {
+        String[] output = {"1"};
+        LeftOptional.of("1").ifPresent(t -> output[0] = "Y");
+        assertEquals("Y", output[0]);
+        LeftOptional.empty().ifPresent(t -> output[0] = "N");
+        assertEquals("Y", output[0]);
+    }
+
+    @Test
+    void testIfPresentOrElse() {
+        String[] output1 = {"1"};
+        String[] output2 = {"1"};
+        LeftOptional.of("1").ifPresentOrElse(t -> output1[0] = "Y", () -> output2[0] = "N");
+        assertEquals("Y", output1[0]);
+        assertEquals("1", output2[0]);
+        LeftOptional.empty().ifPresentOrElse(t -> output1[0] = "A", () -> output2[0] = "Z");
+        assertEquals("Y", output1[0]);
+        assertEquals("Z", output2[0]);
+    }
+
+    @Test
+    void testStream() {
+        assertEquals(List.of("1"), LeftOptional.of("1").stream().collect(Collectors.toList()));
+        assertEquals(List.of(), LeftOptional.empty().stream().collect(Collectors.toList()));
+    }
+
+    @Test
+    void testOrElse() {
+        assertEquals("1", LeftOptional.of("1").orElse("2"));
+        assertEquals("2", LeftOptional.empty().orElse("2"));
+    }
+
+    @Test
+    void testOrElseGet() {
+        assertEquals("1", LeftOptional.of("1").orElseGet(() -> "2"));
+        assertEquals("2", LeftOptional.empty().orElseGet(() -> "2"));
+    }
+
+    @Test
+    void testOrElseThrow() {
+        Exception x = assertThrows(NoSuchElementException.class, () -> LeftOptional.empty().orElseThrow());
+        assertEquals("No value present", x.getMessage());
+        assertEquals("2", LeftOptional.of("2").orElseThrow());
+    }
+
+    @Test
+    void testOrElseThrowWithSupplier() throws IOException {
+        Exception x = assertThrows(IOException.class, () -> LeftOptional.empty().orElseThrow(() -> new IOException("1")));
+        assertEquals("1", x.getMessage());
+        assertEquals("2", LeftOptional.of("2").orElseThrow(() -> new IOException("1")));
     }
 }
