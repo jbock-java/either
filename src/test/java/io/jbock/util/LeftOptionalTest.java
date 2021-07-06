@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -153,5 +154,12 @@ class LeftOptionalTest {
         Exception x = assertThrows(IOException.class, () -> LeftOptional.empty().orElseThrow(() -> new IOException("1")));
         assertEquals("1", x.getMessage());
         assertEquals("2", LeftOptional.of("2").orElseThrow(() -> new IOException("1")));
+    }
+
+    @Test
+    void testEfficientEmpty() {
+        LeftOptional<String> empty1 = LeftOptional.empty();
+        LeftOptional<String> empty2 = LeftOptional.empty();
+        assertSame(empty1, empty2);
     }
 }
