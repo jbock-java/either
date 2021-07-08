@@ -42,7 +42,7 @@ Finally there is the all-powerful `fold` method, and `getRight` to get the origi
 
 ### Testimonies
 
-This library grew for several years as part of the [jbock](https://github.com/jbock-java/jbock) project,
+This library grew for several months as part of the [jbock](https://github.com/jbock-java/jbock) project,
 until it was released independently. `jbock:5.3` uses it internally to perform input validation.
 Jbock's generated `parse` method returns an `Either`, too.
 
