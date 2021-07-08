@@ -25,7 +25,7 @@ Either<String, BigInteger> possiblyPrime = Stream.generate(() ->
         .filter(n -> n.isProbablePrime(10))
         .findAny()
         .<Either<String, BigInteger>>map(Either::right)
-        .orElseGet(() -> left("my Left value"));
+        .orElseGet(() -> Either.left("my Left value"));
 ````
 
 Declaring the result type before the `map` operation is necessary, due to limitations of Java's typechecker.
