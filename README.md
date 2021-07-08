@@ -8,7 +8,7 @@ or simply as a lightweight alternative to throwing an Exception.
 
 There are several popular libraries that offer an `Either` type,
 including [vavr](https://github.com/vavr-io/vavr), [fugue](https://bitbucket.org/atlassian/fugue/src/master/), and [lambda](https://github.com/palatable/lambda).
-This particular `Either` is easy to work with if you're already familiar with `Optional`.
+This particular `Either` is very small (around 400 SLOC), and easy to work with if you're already familiar with `Optional`.
 
 ### empty to Left
 
@@ -38,7 +38,7 @@ This is intuitive, because the corresponding `Optional` methods leave *empty* un
 There are also `mapLeft`, `flatMapLeft` and `acceptLeft` methods,
 which leave a Right unchanged.
 
-Finally there is the all-powerful `fold` method, and `getRight` if you want your original `Optional` back.
+Finally there is the all-powerful `fold` method, and `getRight` to get the original `Optional` back.
 
 ### Testimonies
 
