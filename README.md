@@ -36,7 +36,7 @@ An Either has the familiar methods `map`, `flatMap`, `filter`, `accept` and `orE
 All of these work on *Right* Eithers, and leave a *Left* unchanged.
 This is intuitive, because the corresponding `Optional` methods leave *empty* unchanged.
 There are also `mapLeft`, `flatMapLeft` and `acceptLeft` methods,
-which leave a Right unchanged.
+which leave a *Right* unchanged instead.
 
 Finally there is the all-powerful `fold` method, and `getRight` to get the original `Optional` back.
 
