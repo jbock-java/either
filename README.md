@@ -46,7 +46,7 @@ This library grew for several months as part of the [jbock](https://github.com/j
 until it was released independently. jbock uses it internally to perform input validation,
 and its generated `parse` method returns an `Either`.
 
-### Other eithers
+### Either gang
 
 * [spencerwi](https://github.com/spencerwi/Either.java)
-
+* [ambivalence](https://github.com/poetix/ambivalence)
