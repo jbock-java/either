@@ -32,17 +32,17 @@ Declaring the result type before the `map` operation is necessary, due to limita
 
 ### Working with Either
 
-An Either has the familiar methods `map`, `flatMap`, `filter`, `accept` and `orElseThrow`.
+An Either has the familiar methods `map`, `flatMap`, `filter` and `orElseThrow`.
 All of these work on *Right* Eithers, and leave a *Left* unchanged.
 This is intuitive, because the corresponding `Optional` methods leave *empty* unchanged.
-There are also `mapLeft`, `flatMapLeft` and `acceptLeft` methods,
+There are also `mapLeft` and `flatMapLeft` methods,
 which leave a *Right* unchanged instead.
 
-Finally there is the all-powerful `fold` method, and `getRight` to get the original `Optional` back.
+Finally there is the all-powerful `fold` method, as well as `getLeft`
+and `getRight` to convert back to `Optional`.
 
 ### Testimonies
 
 This library grew for several months as part of the [jbock](https://github.com/jbock-java/jbock) project,
-until it was released independently. `jbock:5.3` uses it internally to perform input validation.
-Jbock's generated `parse` method returns an `Either`, too.
-
+until it was released independently. jbock uses it internally to perform input validation,
+and its generated `parse` method returns an `Either`.
