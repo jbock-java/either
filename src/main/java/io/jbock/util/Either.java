@@ -87,10 +87,10 @@ public abstract class Either<L, R> {
      * @param <R2> the new RHS type
      * @return an equivalent instance if this is a Left, otherwise a Right containing
      *         the result of applying {@code mapper} to the RHS value
+     * @throws NullPointerException if the {@code mapper} returns a {@code null} result
      */
-    public final <R2> Either<L, R2> map(Function<? super R, ? extends R2> mapper) {
-        return fold(Either::left, r -> right(mapper.apply(r)));
-    }
+    public abstract <R2> Either<L, R2> map(
+            Function<? super R, ? extends R2> mapper);
 
     /**
      * If this is a Right, returns the result of applying the mapper function to the RHS value.
@@ -101,22 +101,21 @@ public abstract class Either<L, R> {
      * @return an equivalent instance if this is a Left, otherwise the result of
      *         applying {@code mapper} to the RHS value
      */
-    public final <R2> Either<L, R2> flatMap(
-            Function<? super R, ? extends Either<? extends L, ? extends R2>> mapper) {
-        return fold(Either::left, r -> narrow(mapper.apply(r)));
-    }
+    public abstract <R2> Either<L, R2> flatMap(
+            Function<? super R, ? extends Either<? extends L, ? extends R2>> mapper);
 
     /**
      * If this is a Left, returns a Left containing the LHS value.
      * If this is a Right, applies the predicate function to the RHS value.
      * If the predicate function returns an empty result,
      * returns a Right containing the RHS value.
-     * If the result is not empty, returns a Left containing that result.
+     * If the result is not empty, returns a Left containing the result.
      *
      * @param predicate a function that acts as a filter predicate
      * @return filter result
      */
-    public abstract Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate);
+    public abstract Either<L, R> filter(
+            Function<? super R, LeftOptional<? extends L>> predicate);
 
     /**
      * If this is a Left, returns a Left containing the result of applying the mapper function to the LHS value.
@@ -126,8 +125,10 @@ public abstract class Either<L, R> {
      * @param <L2> the new LHS type
      * @return an equivalent instance if this is a Right, otherwise a Left containing
      *         the result of applying {@code mapper} to the LHS value
+     * @throws NullPointerException if the {@code mapper} returns a {@code null} result
      */
-    public abstract <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper);
+    public abstract <L2> Either<L2, R> mapLeft(
+            Function<? super L, ? extends L2> mapper);
 
     /**
      * If this is a Left, returns the result of applying the mapper function to the LHS value.
@@ -142,6 +143,19 @@ public abstract class Either<L, R> {
             Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper);
 
     /**
+     * If this is a Right, returns a Right containing the RHS value.
+     * If this is a Left, applies the predicate function to the LHS value.
+     * If the predicate function returns an empty result,
+     * returns a Left containing the LHS value.
+     * If the result is not empty, returns a Right containing the result.
+     *
+     * @param predicate a function that acts as a filter predicate
+     * @return filter result
+     */
+    public abstract Either<L, R> filterLeft(
+            Function<? super L, Optional<? extends R>> predicate);
+
+    /**
      * If this is a Right, returns the RHS value.
      * Otherwise throws an exception produced by the exception supplying function.
      *
@@ -150,7 +164,8 @@ public abstract class Either<L, R> {
      * @return the RHS value, if this is a Right
      * @throws X the result of applying {@code exceptionSupplier} to the LHS value, if this is a Left
      */
-    public abstract <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) throws X;
+    public abstract <X extends Throwable> R orElseThrow(
+            Function<? super L, ? extends X> exceptionSupplier) throws X;
 
     /**
      * If this is a Left, returns the result of applying the {@code leftMapper} to the LHS value.
@@ -165,7 +180,6 @@ public abstract class Either<L, R> {
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper);
 
-
     /**
      * If this is a Left, performs the {@code leftAction} with the LHS value.
      * Otherwise performs the {@code rightAction} with the RHS value.
@@ -173,7 +187,9 @@ public abstract class Either<L, R> {
      * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
      */
-    public abstract void ifPresentOrElse(Consumer<? super L> leftAction, Consumer<? super R> rightAction);
+    public abstract void ifPresentOrElse(
+            Consumer<? super L> leftAction,
+            Consumer<? super R> rightAction);
 
     /**
      * Returns {@code true} if this is a Left, otherwise {@code false}.
