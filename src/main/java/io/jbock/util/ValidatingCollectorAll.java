@@ -24,9 +24,10 @@ final class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, Vali
 
         void accumulate(Either<L, R> either) {
             if (!left.isEmpty()) {
-                either.acceptLeft(left::add);
+                either.ifPresentOrElse(left::add, r -> {
+                });
             } else {
-                either.accept(left::add, right::add);
+                either.ifPresentOrElse(left::add, right::add);
             }
         }
 

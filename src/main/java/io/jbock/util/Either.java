@@ -142,21 +142,19 @@ public abstract class Either<L, R> {
      * @return an equivalent instance if this is a Right, otherwise the result of
      *         applying {@code mapper} to the LHS value
      */
-    public final <L2> Either<L2, R> flatMapLeft(
-            Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
-        return fold(l -> narrow(mapper.apply(l)), Either::right);
-    }
+    public abstract <L2> Either<L2, R> flatMapLeft(
+            Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper);
 
     /**
      * If this is a Right, returns the RHS value.
      * Otherwise throws an exception produced by the exception supplying function.
      *
-     * @param f exception supplying function
+     * @param exceptionSupplier exception supplying function
      * @param <X> type of the exception
      * @return the RHS value, if this is a Right
-     * @throws X the result of applying {@code f} to the LHS value, if this is a Left
+     * @throws X the result of applying {@code exceptionSupplier} to the LHS value, if this is a Left
      */
-    public abstract <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> f) throws X;
+    public abstract <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) throws X;
 
     /**
      * If this is a Left, returns the result of applying the {@code leftMapper} to the LHS value.
@@ -164,12 +162,13 @@ public abstract class Either<L, R> {
      *
      * @param leftMapper the function to apply if this is a Left
      * @param rightMapper the function to apply if this is a Right
-     * @param <U> result type
+     * @param <U> the result type of both {@code leftMapper} and {@code rightMapper}
      * @return the result of applying either {@code leftMapper} or {@code rightMapper}
      */
     public abstract <U> U fold(
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper);
+
 
     /**
      * If this is a Left, performs the {@code leftAction} with the LHS value.
@@ -178,37 +177,7 @@ public abstract class Either<L, R> {
      * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
      */
-    public final void accept(Consumer<? super L> leftAction, Consumer<? super R> rightAction) {
-        fold(l -> {
-            leftAction.accept(l);
-            return null;
-        }, r -> {
-            rightAction.accept(r);
-            return null;
-        });
-    }
-
-    /**
-     * If this is a Left, performs the {@code leftAction} with the LHS value.
-     * Otherwise does nothing.
-     *
-     * @param leftAction action to run if this is a Left
-     */
-    public final void acceptLeft(Consumer<? super L> leftAction) {
-        accept(leftAction, r -> {
-        });
-    }
-
-    /**
-     * If this is a Right, performs the {@code rightAction} with the RHS value.
-     * Otherwise does nothing.
-     *
-     * @param rightAction action to run if this is a Right
-     */
-    public final void acceptRight(Consumer<? super R> rightAction) {
-        accept(l -> {
-        }, rightAction);
-    }
+    public abstract void ifPresentOrElse(Consumer<? super L> leftAction, Consumer<? super R> rightAction);
 
     /**
      * Returns {@code true} if this is a Left, otherwise {@code false}.

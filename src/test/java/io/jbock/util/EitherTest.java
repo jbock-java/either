@@ -106,35 +106,13 @@ class EitherTest {
     }
 
     @Test
-    void testAcceptRight() {
-        String[] output = {"1"};
-        Either<Integer, Integer> left = Either.left(1);
-        left.acceptRight(r -> output[0] = "L");
-        assertEquals("1", output[0]);
-        Either<Integer, Integer> right = Either.right(1);
-        right.acceptRight(r -> output[0] = "R");
-        assertEquals("R", output[0]);
-    }
-
-    @Test
-    void testAcceptLeft() {
-        String[] output = {"1"};
-        Either<Integer, Integer> left = Either.left(1);
-        left.acceptLeft(l -> output[0] = "L");
-        assertEquals("L", output[0]);
-        Either<Integer, Integer> right = Either.right(1);
-        right.acceptLeft(l -> output[0] = "R");
-        assertEquals("L", output[0]);
-    }
-
-    @Test
     void testAccept() {
         String[] output = {"1"};
         Either<Integer, Integer> left = Either.left(1);
-        left.accept(l -> output[0] = "L", r -> output[0] = "R");
+        left.ifPresentOrElse(l -> output[0] = "L", r -> output[0] = "R");
         assertEquals("L", output[0]);
         Either<Integer, Integer> right = Either.right(1);
-        right.accept(l -> output[0] = "L", r -> output[0] = "R");
+        right.ifPresentOrElse(l -> output[0] = "L", r -> output[0] = "R");
         assertEquals("R", output[0]);
     }
 

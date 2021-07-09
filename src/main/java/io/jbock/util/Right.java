@@ -2,6 +2,7 @@ package io.jbock.util;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 final class Right<L, R> extends Either<L, R> {
@@ -32,7 +33,12 @@ final class Right<L, R> extends Either<L, R> {
     }
 
     @Override
-    public <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> f) throws X {
+    public <L2> Either<L2, R> flatMapLeft(Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
+        return same();
+    }
+
+    @Override
+    public <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) throws X {
         return value;
     }
 
@@ -41,6 +47,11 @@ final class Right<L, R> extends Either<L, R> {
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper) {
         return rightMapper.apply(value);
+    }
+
+    @Override
+    public void ifPresentOrElse(Consumer<? super L> leftAction, Consumer<? super R> rightAction) {
+        rightAction.accept(value);
     }
 
     @Override
@@ -65,5 +76,11 @@ final class Right<L, R> extends Either<L, R> {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <L2> Either<L2, R> same() {
+        // return new Right<>(value);
+        return (Either<L2, R>) this;
     }
 }
