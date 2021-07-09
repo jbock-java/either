@@ -116,9 +116,7 @@ public abstract class Either<L, R> {
      * @param predicate a function that acts as a filter predicate
      * @return filter result
      */
-    public final Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate) {
-        return fold(Either::left, r -> narrow(predicate.apply(r).orElseRight(() -> r)));
-    }
+    public abstract Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate);
 
     /**
      * If this is a Left, returns a Left containing the result of applying the mapper function to the LHS value.
@@ -129,9 +127,7 @@ public abstract class Either<L, R> {
      * @return an equivalent instance if this is a Right, otherwise a Left containing
      *         the result of applying {@code mapper} to the LHS value
      */
-    public final <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
-        return fold(l -> left(mapper.apply(l)), Either::right);
-    }
+    public abstract <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper);
 
     /**
      * If this is a Left, returns the result of applying the mapper function to the LHS value.

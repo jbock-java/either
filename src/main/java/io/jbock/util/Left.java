@@ -33,6 +33,16 @@ final class Left<L, R> extends Either<L, R> {
     }
 
     @Override
+    public Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate) {
+        return same();
+    }
+
+    @Override
+    public <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
+        return create(mapper.apply(value));
+    }
+
+    @Override
     public <L2> Either<L2, R> flatMapLeft(Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
         return narrow(mapper.apply(value));
     }
