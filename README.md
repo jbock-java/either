@@ -37,7 +37,7 @@ All of these work on *Right* Eithers, and leave a *Left* unchanged.
 This is intuitive, because the corresponding `Optional` methods leave *empty* unchanged.
 Then there are `mapLeft`, `flatMapLeft` and `filterLeft`, which leave a *Right* unchanged instead.
 
-Finally there is the all-powerful `fold` method, as well as `getRight` to convert back to `Optional`,
+Finally there is `ifPresentOrElse` and the all-powerful `fold` method, as well as `getRight` to convert back to `Optional`,
 and `getLeft` to get the LHS value, wrapped in a so-called `LeftOptional`.
 
 ### Testimonies
