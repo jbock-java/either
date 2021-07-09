@@ -45,3 +45,8 @@ and `getLeft` to get the LHS value, wrapped in a so-called `LeftOptional`.
 This library grew for several months as part of the [jbock](https://github.com/jbock-java/jbock) project,
 until it was released independently. jbock uses it internally to perform input validation,
 and its generated `parse` method returns an `Either`.
+
+### Other eithers
+
+* [spencerwi](https://github.com/spencerwi/Either.java)
+
