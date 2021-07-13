@@ -34,10 +34,10 @@ Declaring the result type before the `map` operation is necessary, due to limita
 
 An Either has the familiar methods `map`, `flatMap` and `filter`.
 All of these work on *Right* Eithers, and leave a *Left* unchanged.
-This is intuitive, because the corresponding `Optional` methods leave *empty* unchanged.
+This is intuitive, because the corresponding methods in `Optional` leave *empty* unchanged.
 Symmetrically there are `mapLeft`, `flatMapLeft` and `filterLeft`, which leave a *Right* unchanged instead.
 
-Finally there is `ifPresentOrElse` and the all-powerful `fold` method, as well as `getRight` to convert back to `Optional`,
+Finally there is ~~ifPresentOrElse~~ `ifLeftOrElse` (1.3) and the all-powerful `fold` method, as well as `getRight` to convert back to `Optional`,
 and `getLeft` to get the LHS value, wrapped in a so-called `LeftOptional`.
 
 ### Testimonies
