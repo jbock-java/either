@@ -120,10 +120,10 @@ class EitherTest {
     void testAccept() {
         String[] output = {"1"};
         Either<Integer, Integer> left = Either.left(1);
-        left.ifPresentOrElse(l -> output[0] = "L", r -> output[0] = "R");
+        left.ifLeftOrElse(l -> output[0] = "L", r -> output[0] = "R");
         assertEquals("L", output[0]);
         Either<Integer, Integer> right = Either.right(1);
-        right.ifPresentOrElse(l -> output[0] = "L", r -> output[0] = "R");
+        right.ifLeftOrElse(l -> output[0] = "L", r -> output[0] = "R");
         assertEquals("R", output[0]);
     }
 

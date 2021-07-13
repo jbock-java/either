@@ -187,7 +187,7 @@ public abstract class Either<L, R> {
      * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
      */
-    public abstract void ifPresentOrElse(
+    public abstract void ifLeftOrElse(
             Consumer<? super L> leftAction,
             Consumer<? super R> rightAction);
 
@@ -208,16 +208,16 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * If this is a Left, return a {@code LeftOptional} containing the LHS value.
-     * Otherwise return an empty {@code LeftOptional}.
+     * If this is a Left, returns a {@code LeftOptional} containing the LHS value.
+     * Otherwise returns an empty {@code LeftOptional}.
      *
      * @return the LHS value, or {@link java.util.Optional#empty()} if this is a Right
      */
     public abstract LeftOptional<L> getLeft();
 
     /**
-     * If this is a Right, return an {@code Optional} containing the RHS value.
-     * Otherwise return an empty {@code Optional}.
+     * If this is a Right, returns an {@code Optional} containing the RHS value.
+     * Otherwise returns an empty {@code Optional}.
      *
      * @return the RHS value if this is a Right, otherwise an empty {@code Optional}
      */

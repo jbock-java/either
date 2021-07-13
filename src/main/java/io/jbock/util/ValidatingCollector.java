@@ -26,7 +26,8 @@ final class ValidatingCollector<L, R> implements Collector<Either<L, R>, Validat
             if (left != null) {
                 return;
             }
-            either.ifPresentOrElse(l -> left = l,
+            either.ifLeftOrElse(
+                    left -> this.left = left,
                     right::add);
         }
 

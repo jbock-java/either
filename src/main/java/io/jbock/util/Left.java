@@ -79,7 +79,7 @@ final class Left<L, R> extends Either<L, R> {
     }
 
     @Override
-    public void ifPresentOrElse(Consumer<? super L> leftAction, Consumer<? super R> rightAction) {
+    public void ifLeftOrElse(Consumer<? super L> leftAction, Consumer<? super R> rightAction) {
         leftAction.accept(value);
     }
 
