@@ -5,21 +5,23 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Internal implementation of a Left-Either.
+ *
+ * @param <L> the type of the LHS value
+ * @param <R> the type of the RHS value
+ */
 final class Left<L, R> extends Either<L, R> {
 
     private final L value;
 
-    private Left(L value) {
+    Left(L value) {
         this.value = Objects.requireNonNull(value);
     }
 
-    static <L, R> Left<L, R> create(L value) {
-        return new Left<>(value);
-    }
-
     @Override
-    public LeftOptional<L> getLeft() {
-        return LeftOptional.of(value);
+    public Optional<L> getLeft() {
+        return Optional.of(value);
     }
 
     @Override
@@ -43,13 +45,13 @@ final class Left<L, R> extends Either<L, R> {
     }
 
     @Override
-    public Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate) {
+    public Either<L, R> filter(Function<? super R, Optional<? extends L>> predicate) {
         return same();
     }
 
     @Override
     public <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
-        return create(mapper.apply(value));
+        return new Left<>(mapper.apply(value));
     }
 
     @Override
@@ -63,7 +65,7 @@ final class Left<L, R> extends Either<L, R> {
         if (test.isEmpty()) {
             return same();
         }
-        return Right.create(test.orElseThrow());
+        return new Right<>(test.orElseThrow());
     }
 
     @Override

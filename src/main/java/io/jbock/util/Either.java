@@ -33,7 +33,7 @@ public abstract class Either<L, R> {
      * @throws NullPointerException if value is {@code null}
      */
     public static <L, R> Either<L, R> left(L value) {
-        return Left.create(value);
+        return new Left<>(value);
     }
 
     /**
@@ -46,7 +46,7 @@ public abstract class Either<L, R> {
      * @throws NullPointerException if value is {@code null}
      */
     public static <L, R> Either<L, R> right(R value) {
-        return Right.create(value);
+        return new Right<>(value);
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class Either<L, R> {
      * @return filter result
      */
     public abstract Either<L, R> filter(
-            Function<? super R, LeftOptional<? extends L>> predicate);
+            Function<? super R, Optional<? extends L>> predicate);
 
     /**
      * If this is a Left, returns a Left containing the result of applying the mapper function to the LHS value.
@@ -196,12 +196,12 @@ public abstract class Either<L, R> {
     }
 
     /**
-     * If this is a Left, returns a {@code LeftOptional} containing the LHS value.
-     * Otherwise returns an empty {@code LeftOptional}.
+     * If this is a Left, returns an {@code Optional} containing the LHS value.
+     * Otherwise returns an empty {@code Optional}.
      *
      * @return the LHS value, or {@link java.util.Optional#empty()} if this is a Right
      */
-    public abstract LeftOptional<L> getLeft();
+    public abstract Optional<L> getLeft();
 
     /**
      * If this is a Right, returns an {@code Optional} containing the RHS value.

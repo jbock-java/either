@@ -5,21 +5,23 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Internal implementation of a Right-Either.
+ *
+ * @param <L> the type of the LHS value
+ * @param <R> the type of the RHS value
+ */
 final class Right<L, R> extends Either<L, R> {
 
     private final R value;
 
-    private Right(R value) {
+    Right(R value) {
         this.value = Objects.requireNonNull(value);
     }
 
-    static <L, R> Right<L, R> create(R value) {
-        return new Right<>(value);
-    }
-
     @Override
-    public LeftOptional<L> getLeft() {
-        return LeftOptional.empty();
+    public Optional<L> getLeft() {
+        return Optional.empty();
     }
 
     @Override
@@ -34,7 +36,7 @@ final class Right<L, R> extends Either<L, R> {
 
     @Override
     public <R2> Either<L, R2> map(Function<? super R, ? extends R2> mapper) {
-        return create(mapper.apply(value));
+        return new Right<>(mapper.apply(value));
     }
 
     @Override
@@ -43,12 +45,12 @@ final class Right<L, R> extends Either<L, R> {
     }
 
     @Override
-    public Either<L, R> filter(Function<? super R, LeftOptional<? extends L>> predicate) {
-        LeftOptional<? extends L> test = predicate.apply(value);
+    public Either<L, R> filter(Function<? super R, Optional<? extends L>> predicate) {
+        Optional<? extends L> test = predicate.apply(value);
         if (test.isEmpty()) {
             return same();
         }
-        return Left.create(test.orElseThrow());
+        return new Left<>(test.orElseThrow());
     }
 
     @Override

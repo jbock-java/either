@@ -36,7 +36,7 @@ class EitherTest {
         Either<String, ?> either = Either.left("1");
         assertTrue(either.isLeft());
         assertFalse(either.isRight());
-        assertEquals(LeftOptional.of("1"), either.getLeft());
+        assertEquals(Optional.of("1"), either.getLeft());
         assertEquals(Optional.empty(), either.getRight());
     }
 
@@ -46,7 +46,7 @@ class EitherTest {
         assertTrue(either.isRight());
         assertFalse(either.isLeft());
         assertEquals(Optional.of("1"), either.getRight());
-        assertEquals(LeftOptional.empty(), either.getLeft());
+        assertEquals(Optional.empty(), either.getLeft());
     }
 
     @Test
@@ -88,11 +88,11 @@ class EitherTest {
     @Test
     void testFilter() {
         Either<String, ?> left = Either.left("1");
-        assertSame(left, left.filter(r -> LeftOptional.of("2"))); // Left is unchanged
-        assertSame(left, left.filter(r -> LeftOptional.empty())); // Left is unchanged
+        assertSame(left, left.filter(r -> Optional.of("2"))); // Left is unchanged
+        assertSame(left, left.filter(r -> Optional.empty())); // Left is unchanged
         Either<String, String> right = Either.right("1");
-        assertEquals(Either.left("2"), right.filter(r -> LeftOptional.of("2")));
-        assertEquals(right, right.filter(r -> LeftOptional.empty()));
+        assertEquals(Either.left("2"), right.filter(r -> Optional.of("2")));
+        assertEquals(right, right.filter(r -> Optional.empty()));
     }
 
     @Test
