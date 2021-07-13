@@ -40,6 +40,21 @@ Symmetrically there are `mapLeft`, `flatMapLeft` and `filterLeft`, which leave a
 Finally there is ~~ifPresentOrElse~~ `ifLeftOrElse` (1.3) and the all-powerful `fold` method,
 as well as `getRight` and `getLeft` to convert back to `Optional`.
 
+### Working with streams
+
+If you have a stream of `Either`, you can search for failures using one of the collectors
+`toValidList` and `toValidListAll`:
+
+````java
+Either<BigInteger, List<BigInteger>> twoPrimesOrComposite = Stream.generate(() ->
+        ThreadLocalRandom.current().nextInt(1000))
+        .map(BigInteger::valueOf)
+        .limit(2)
+        .<Either<BigInteger, BigInteger>>map(n -> n.isProbablePrime(10) ?
+                Either.right(n) : Either.left(n))
+        .collect(Either.toValidList());
+````
+
 ### Testimonies
 
 This library grew for several months as part of the [jbock](https://github.com/jbock-java/jbock) project,
