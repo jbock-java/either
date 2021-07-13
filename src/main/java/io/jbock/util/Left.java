@@ -81,6 +81,11 @@ final class Left<L, R> extends Either<L, R> {
     }
 
     @Override
+    public <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) throws X {
+        throw exceptionSupplier.apply(value);
+    }
+
+    @Override
     public String toString() {
         return String.format("Left[%s]", value);
     }

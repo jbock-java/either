@@ -3,12 +3,14 @@ package io.jbock.util;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
@@ -106,7 +108,7 @@ class EitherTest {
     }
 
     @Test
-    void testAccept() {
+    void testIfLeftOrElse() {
         String[] output = {"1"};
         Either<Integer, Integer> left = Either.left(1);
         left.ifLeftOrElse(l -> output[0] = "L", r -> output[0] = "R");
@@ -122,5 +124,14 @@ class EitherTest {
         assertEquals("1", left.fold(Objects::toString, Objects::toString));
         Either<String, Integer> right = Either.right(2);
         assertEquals("2", right.fold(Objects::toString, Objects::toString));
+    }
+
+    @Test
+    void testOrElseThrow() {
+        Either<String, ?> left = Either.left("1");
+        IOException x = assertThrows(IOException.class, () -> left.orElseThrow(IOException::new));
+        assertEquals("1", x.getMessage());
+        Either<String, String> right = Either.right("2");
+        assertEquals("2", right.orElseThrow(IllegalArgumentException::new));
     }
 }
