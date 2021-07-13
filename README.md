@@ -46,7 +46,7 @@ If you have a stream of `Either`, you can search for failures using one of the c
 `toValidList` and `toValidListAll`:
 
 ````java
-Either<BigInteger, List<BigInteger>> twoPrimesOrComposite = Stream.generate(() ->
+Either<BigInteger, List<BigInteger>> twoPrimesOrOneComposite = Stream.generate(() ->
         ThreadLocalRandom.current().nextInt(1000))
         .map(BigInteger::valueOf)
         .limit(2)
