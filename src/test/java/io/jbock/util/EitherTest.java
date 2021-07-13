@@ -3,14 +3,12 @@ package io.jbock.util;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
@@ -105,15 +103,6 @@ class EitherTest {
         Either<String, String> left = Either.left("1");
         assertEquals(Either.right("2"), left.filterLeft(r -> Optional.of("2")));
         assertEquals(left, left.filterLeft(r -> Optional.empty()));
-    }
-
-    @Test
-    void testOrElseThrow() {
-        Either<String, ?> left = Either.left("1");
-        IOException x = assertThrows(IOException.class, () -> left.orElseThrow(IOException::new));
-        assertEquals("1", x.getMessage());
-        Either<String, String> right = Either.right("2");
-        assertEquals("2", right.orElseThrow(IllegalArgumentException::new));
     }
 
     @Test

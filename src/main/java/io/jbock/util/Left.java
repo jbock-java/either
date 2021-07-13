@@ -67,11 +67,6 @@ final class Left<L, R> extends Either<L, R> {
     }
 
     @Override
-    public <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) throws X {
-        throw exceptionSupplier.apply(value);
-    }
-
-    @Override
     public <U> U fold(
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper) {

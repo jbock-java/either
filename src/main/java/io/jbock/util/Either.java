@@ -156,18 +156,6 @@ public abstract class Either<L, R> {
             Function<? super L, Optional<? extends R>> predicate);
 
     /**
-     * If this is a Right, returns the RHS value.
-     * Otherwise throws an exception produced by the exception supplying function.
-     *
-     * @param exceptionSupplier exception supplying function
-     * @param <X> type of the exception
-     * @return the RHS value, if this is a Right
-     * @throws X the result of applying {@code exceptionSupplier} to the LHS value, if this is a Left
-     */
-    public abstract <X extends Throwable> R orElseThrow(
-            Function<? super L, ? extends X> exceptionSupplier) throws X;
-
-    /**
      * If this is a Left, returns the result of applying the {@code leftMapper} to the LHS value.
      * Otherwise returns the result of applying the {@code rightMapper} to the RHS value.
      *
