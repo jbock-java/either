@@ -211,7 +211,7 @@ public abstract class Either<L, R> {
      * If this is a Left, returns an {@code Optional} containing the LHS value.
      * Otherwise returns an empty {@code Optional}.
      *
-     * @return the LHS value, or {@link java.util.Optional#empty()} if this is a Right
+     * @return the LHS value if this is a Left, otherwise an empty {@code Optional}
      */
     public abstract Optional<L> getLeft();
 
