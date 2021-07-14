@@ -41,7 +41,9 @@ final class Right<L, R> extends Either<L, R> {
 
     @Override
     public <R2> Either<L, R2> flatMap(Function<? super R, ? extends Either<? extends L, ? extends R2>> mapper) {
-        return narrow(mapper.apply(value));
+        @SuppressWarnings("unchecked")
+        Either<L, R2> result = (Either<L, R2>) mapper.apply(value);
+        return result;
     }
 
     @Override
@@ -55,12 +57,16 @@ final class Right<L, R> extends Either<L, R> {
 
     @Override
     public <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
-        return same();
+        @SuppressWarnings("unchecked")
+        Either<L2, R> result = (Either<L2, R>) this;
+        return result;
     }
 
     @Override
     public <L2> Either<L2, R> flatMapLeft(Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
-        return same();
+        @SuppressWarnings("unchecked")
+        Either<L2, R> result = (Either<L2, R>) this;
+        return result;
     }
 
     @Override
@@ -107,11 +113,5 @@ final class Right<L, R> extends Either<L, R> {
     @Override
     public int hashCode() {
         return value.hashCode();
-    }
-
-    @SuppressWarnings("unchecked")
-    private <L2> Either<L2, R> same() {
-        // equivalently: return new Right<>(value);
-        return (Either<L2, R>) this;
     }
 }

@@ -224,22 +224,6 @@ public abstract class Either<L, R> {
     public abstract Optional<R> getRight();
 
     /**
-     * Internal helper method that narrows the type of {@code Either<? extends L, ? extends R>} to
-     * {@code Either<L, R>}.
-     *
-     * @param either an either
-     * @param <L> the type of the LHS value
-     * @param <R> the type of the RHS value
-     * @return an equivalent {@code Either} instance
-     */
-    @SuppressWarnings("unchecked")
-    static <L, R> Either<L, R> narrow(Either<? extends L, ? extends R> either) {
-        // The cast is just an optimization of the following:
-        // return either.fold(Either::left, Either::right)
-        return (Either<L, R>) either;
-    }
-
-    /**
      * Returns a string representation of this {@code Either}
      * suitable for debugging.  The exact presentation format is unspecified and
      * may vary between implementations and versions.
