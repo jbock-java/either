@@ -82,17 +82,20 @@ public abstract class Either<L, R> {
      * If the provided list is empty, returns an empty {@link Optional}.
      * Otherwise, returns an {@code Optional} containing the list.
      *
-     * @param failures a failures
-     * @param <L> the type of the members of the failures
-     * @return an {@code Optional} which is empty if and only if {@code failures}
+     * <p>This utility method can sometimes be used to express a
+     * {@link #filter(Function)} operation more efficiently.
+     *
+     * @param values a list of objects
+     * @param <T> the type of the members of {@code values}
+     * @return an {@code Optional} which is empty if and only if {@code values}
      *         is empty
      */
-    public static <L> Optional<List<L>> optionalList(List<? extends L> failures) {
-        if (failures.isEmpty()) {
+    public static <T> Optional<List<T>> optionalList(List<? extends T> values) {
+        if (values.isEmpty()) {
             return Optional.empty();
         }
         @SuppressWarnings("unchecked")
-        List<L> result = (List<L>) failures;
+        List<T> result = (List<T>) values;
         return Optional.of(result);
     }
 
