@@ -87,7 +87,7 @@ public abstract class Either<L, R> {
      * @return an {@code Optional} which is empty if and only if {@code failures}
      *         is empty
      */
-    public static <L> Optional<List<L>> asLeftOptional(List<? extends L> failures) {
+    public static <L> Optional<List<L>> optionalList(List<? extends L> failures) {
         if (failures.isEmpty()) {
             return Optional.empty();
         }

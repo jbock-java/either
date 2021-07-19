@@ -4,6 +4,7 @@ import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -133,5 +134,12 @@ class EitherTest {
         assertEquals("1", x.getMessage());
         Either<String, String> right = Either.right("2");
         assertEquals("2", right.orElseThrow(IllegalArgumentException::new));
+    }
+
+    @Test
+    void testOptionalList() {
+        assertEquals(Optional.empty(), Either.optionalList(List.of()));
+        assertEquals(Optional.of(List.of(1)), Either.optionalList(List.of(1)));
+        assertEquals(Optional.of(List.of("1", "2")), Either.optionalList(List.of("1", "2")));
     }
 }
