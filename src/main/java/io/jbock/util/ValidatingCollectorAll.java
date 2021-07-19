@@ -15,14 +15,14 @@ import java.util.stream.Collector;
  * @param <L> the type of the LHS values in the stream
  * @param <R> the type of the RHS values in the stream
  */
-final class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, ValidatingCollectorAll.Acc<L, R>, Either<List<L>, List<R>>> {
+final class ValidatingCollectorAll<L, R> implements Collector<Either<? extends L, ? extends R>, ValidatingCollectorAll.Acc<L, R>, Either<List<L>, List<R>>> {
 
     static final class Acc<L, R> {
 
         private final List<L> left = new ArrayList<>();
         private final List<R> right = new ArrayList<>();
 
-        void accumulate(Either<L, R> either) {
+        void accumulate(Either<? extends L, ? extends R> either) {
             if (!left.isEmpty()) {
                 either.ifLeftOrElse(left::add, r -> {
                 });
@@ -58,7 +58,7 @@ final class ValidatingCollectorAll<L, R> implements Collector<Either<L, R>, Vali
     }
 
     @Override
-    public BiConsumer<Acc<L, R>, Either<L, R>> accumulator() {
+    public BiConsumer<Acc<L, R>, Either<? extends L, ? extends R>> accumulator() {
         return Acc::accumulate;
     }
 

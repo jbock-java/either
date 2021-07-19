@@ -59,7 +59,7 @@ public abstract class Either<L, R> {
      * @return a Right containing all RHS values in the stream,
      *         or, if an LHS value exists, a Left containing the first such value
      */
-    public static <L, R> Collector<Either<L, R>, ?, Either<L, List<R>>> toValidList() {
+    public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<L, List<R>>> toValidList() {
         return new ValidatingCollector<>();
     }
 
@@ -74,8 +74,26 @@ public abstract class Either<L, R> {
      * @return a list of the RHS values in the stream,
      *         or, if an LHS value exists, a nonempty list of all LHS values
      */
-    public static <L, R> Collector<Either<L, R>, ?, Either<List<L>, List<R>>> toValidListAll() {
+    public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<List<L>, List<R>>> toValidListAll() {
         return new ValidatingCollectorAll<>();
+    }
+
+    /**
+     * If the provided list is empty, returns an empty {@link Optional}.
+     * Otherwise, returns an {@code Optional} containing the list.
+     *
+     * @param failures a failures
+     * @param <L> the type of the members of the failures
+     * @return an {@code Optional} which is empty if and only if {@code failures}
+     *         is empty
+     */
+    public static <L> Optional<List<L>> asLeftOptional(List<? extends L> failures) {
+        if (failures.isEmpty()) {
+            return Optional.empty();
+        }
+        @SuppressWarnings("unchecked")
+        List<L> result = (List<L>) failures;
+        return Optional.of(result);
     }
 
     /**
