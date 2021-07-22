@@ -1,10 +1,8 @@
 package io.jbock.util;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collector;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -47,56 +45,6 @@ public abstract class Either<L, R> {
      */
     public static <L, R> Either<L, R> right(R value) {
         return new Right<>(value);
-    }
-
-    /**
-     * Returns a collector that accumulates a Right containing all values in the original order,
-     * if there are no Left instances in the stream.
-     * If the stream contains a Left, it accumulates a Left containing the first LHS value in the stream.
-     *
-     * @param <L> the LHS type
-     * @param <R> the RHS type
-     * @return a Right containing all RHS values in the stream,
-     *         or, if an LHS value exists, a Left containing the first such value
-     */
-    public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<L, List<R>>> toValidList() {
-        return new ValidatingCollector<>();
-    }
-
-    /**
-     * Returns a collector that accumulates a Right containing all values in the original order,
-     * if there are no Left instances in the stream.
-     * If the stream contains a Left, it accumulates a Left containing all LHS values in the stream,
-     * in the original order.
-     *
-     * @param <L> the LHS type
-     * @param <R> the RHS type
-     * @return a list of the RHS values in the stream,
-     *         or, if an LHS value exists, a nonempty list of all LHS values
-     */
-    public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<List<L>, List<R>>> toValidListAll() {
-        return new ValidatingCollectorAll<>();
-    }
-
-    /**
-     * If the provided list is empty, returns an empty {@link Optional}.
-     * Otherwise, returns an {@code Optional} containing the list.
-     *
-     * <p>This utility method can sometimes be used to express a
-     * {@link #filter(Function)} operation more efficiently.
-     *
-     * @param values a list of objects
-     * @param <T> the type of the members of {@code values}
-     * @return an {@code Optional} which is empty if and only if {@code values}
-     *         is empty
-     */
-    public static <T> Optional<List<T>> optionalList(List<? extends T> values) {
-        if (values.isEmpty()) {
-            return Optional.empty();
-        }
-        @SuppressWarnings("unchecked")
-        List<T> result = (List<T>) values;
-        return Optional.of(result);
     }
 
     /**

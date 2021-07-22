@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /**
- * Internal implementation of {@link Either#toValidList()}.
+ * Internal implementation of {@link Eithers#toValidList()}.
  *
  * @param <L> the type of the LHS values in the stream
  * @param <R> the type of the RHS values in the stream
