@@ -8,7 +8,7 @@ or simply as a lightweight alternative to throwing an Exception.
 
 There are several popular libraries that offer an `Either` type,
 including [vavr](https://github.com/vavr-io/vavr), [fugue](https://bitbucket.org/atlassian/fugue/src/master/), and [lambda](https://github.com/palatable/lambda).
-This particular `Either` is very small (around 400 SLOC), and easy to work with if you're already familiar with `Optional`.
+This particular `Either` is lightweight, and very easy to work with if you're already familiar with `Optional`.
 
 ### empty to Left
 
