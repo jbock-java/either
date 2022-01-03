@@ -67,4 +67,5 @@ and its generated `parse` method returns an `Either`.
 * [ambivalence](https://github.com/poetix/ambivalence)
 * [derive4j](https://github.com/derive4j/derive4j)
 * [mediascience](https://github.com/mediascience/java-either)
+* [pragmatica](https://github.com/siy/pragmatica)
 
