@@ -25,7 +25,7 @@ Either<String, BigInteger> possiblyPrime = Stream.generate(() ->
         .filter(n -> n.isProbablePrime(10))
         .findAny()
         .<Either<String, BigInteger>>map(Either::right)
-        .orElseGet(() -> Either.left("my Left value"));
+        .orElseGet(() -> Either.left("no such value"));
 ````
 
 Declaring the result type before the `map` operation is necessary, due to limitations of Java's typechecker.
@@ -52,7 +52,7 @@ Either<BigInteger, List<BigInteger>> twoPrimesOrOneComposite = Stream.generate((
         .limit(2)
         .<Either<BigInteger, BigInteger>>map(n -> n.isProbablePrime(10) ?
                 Either.right(n) : Either.left(n))
-        .collect(Either.toValidList());
+        .collect(Eithers.toValidList());
 ````
 
 ### Testimonies
