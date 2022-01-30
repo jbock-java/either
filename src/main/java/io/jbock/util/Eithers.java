@@ -90,6 +90,9 @@ public final class Eithers {
 
         final Acc<L, R> combine(Acc<L, R> other) {
             if (isLeft()) {
+                if (other.isLeft()) {
+                    combineLeft(other);
+                }
                 return this;
             }
             if (other.isLeft()) {
@@ -105,11 +108,17 @@ public final class Eithers {
             return this;
         }
 
+        abstract void combineLeft(Acc<L, R> other);
+
         abstract boolean isLeft();
     }
 
     private static class ShortcuttingAcc<L, R> extends Acc<L, R> {
         L left;
+
+        @Override
+        void combineLeft(Acc<L, R> other) {
+        }
 
         @Override
         boolean isLeft() {
@@ -133,6 +142,12 @@ public final class Eithers {
 
     private static class FullAcc<L, R> extends Acc<L, R> {
         List<L> left;
+
+        @Override
+        void combineLeft(Acc<L, R> other) {
+            // TODO remove cast
+            left.addAll(((FullAcc<L, R>) other).left);
+        }
 
         @Override
         boolean isLeft() {
