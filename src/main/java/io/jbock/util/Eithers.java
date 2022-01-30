@@ -70,42 +70,87 @@ public final class Eithers {
         }
     }
 
-    private static abstract class BasicAcc<L, R> {
-        List<R> right;
+    // visible for testing
+    static abstract class Acc<L, R> {
+        private List<R> right;
 
         final List<R> right() {
+            return right;
+        }
+
+        final void addRight(R value) {
+            if (isLeft()) {
+                return;
+            }
             if (right == null) {
                 right = new ArrayList<>();
             }
-            return right;
+            right.add(value);
+        }
+
+        final Acc<L, R> combine(Acc<L, R> other) {
+            if (isLeft()) {
+                return this;
+            }
+            if (other.isLeft()) {
+                return other;
+            }
+            if (other.right == null) {
+                return this;
+            }
+            if (right == null) {
+                right = new ArrayList<>();
+            }
+            right.addAll(other.right);
+            return this;
+        }
+
+        abstract boolean isLeft();
+    }
+
+    private static class ShortcuttingAcc<L, R> extends Acc<L, R> {
+        L left;
+
+        @Override
+        boolean isLeft() {
+            return left != null;
+        }
+
+        void addLeft(L value) {
+            if (left != null) {
+                return;
+            }
+            left = value;
+        }
+
+        Either<L, List<R>> finish() {
+            if (left != null) {
+                return Either.left(left);
+            }
+            return Either.right(right() == null ? List.of() : right());
         }
     }
 
-    // visible for testing
-    static final class Acc<L, R> extends BasicAcc<L, R> {
-        private L left;
-    }
+    private static class FullAcc<L, R> extends Acc<L, R> {
+        List<L> left;
 
-    // visible for testing
-    static final class AccAll<L, R> extends BasicAcc<L, R> {
-        private List<L> left;
+        @Override
+        boolean isLeft() {
+            return left != null && !left.isEmpty();
+        }
 
-        void addLeft(L newLeft) {
+        void addLeft(L value) {
             if (left == null) {
                 left = new ArrayList<>();
             }
-            left.add(newLeft);
+            left.add(value);
         }
 
-        private List<L> left() {
-            if (left == null) {
-                left = new ArrayList<>();
+        Either<List<L>, List<R>> finish() {
+            if (left != null && !left.isEmpty()) {
+                return Either.left(left);
             }
-            return left;
-        }
-
-        boolean isLeftEmpty() {
-            return left == null || left().isEmpty();
+            return Either.right(right() == null ? List.of() : right());
         }
     }
 
@@ -125,34 +170,13 @@ public final class Eithers {
      */
     public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<L, List<R>>> toValidList() {
 
-        BiConsumer<Acc<L, R>, Either<? extends L, ? extends R>> accumulate = (acc, either) -> {
-            if (acc.left != null) {
-                return;
-            }
-            either.ifLeftOrElse(
-                    left -> acc.left = left,
-                    acc.right()::add);
-        };
+        BiConsumer<ShortcuttingAcc<L, R>, Either<? extends L, ? extends R>> accumulate = (acc, either) ->
+                either.ifLeftOrElse(acc::addLeft, acc::addRight);
 
-        BinaryOperator<Acc<L, R>> combine = (acc, other) -> {
-            if (acc.left != null) {
-                return acc;
-            }
-            if (other.left != null) {
-                return other;
-            }
-            acc.right().addAll(other.right());
-            return acc;
-        };
+        BinaryOperator<ShortcuttingAcc<L, R>> combine = (acc, other) ->
+                (ShortcuttingAcc<L, R>) acc.combine(other);
 
-        Function<Acc<L, R>, Either<L, List<R>>> finish = acc -> {
-            if (acc.left != null) {
-                return Either.left(acc.left);
-            }
-            return Either.right(acc.right());
-        };
-
-        return new CollectorImpl<>(Acc::new, accumulate, combine, finish);
+        return new CollectorImpl<>(ShortcuttingAcc::new, accumulate, combine, ShortcuttingAcc::finish);
     }
 
     /**
@@ -172,30 +196,13 @@ public final class Eithers {
      */
     public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<List<L>, List<R>>> toValidListAll() {
 
-        BiConsumer<AccAll<L, R>, Either<? extends L, ? extends R>> accumulate = (acc, either) ->
-                either.ifLeftOrElse(acc::addLeft, acc.right()::add);
+        BiConsumer<FullAcc<L, R>, Either<? extends L, ? extends R>> accumulate = (acc, either) ->
+                either.ifLeftOrElse(acc::addLeft, acc::addRight);
 
-        BinaryOperator<AccAll<L, R>> combine = (acc, other) -> {
-            if (!acc.isLeftEmpty()) {
-                acc.left().addAll(other.left());
-                return acc;
-            }
-            if (!other.isLeftEmpty()) {
-                return other;
-            }
-            acc.right().addAll(other.right());
-            return acc;
-        };
+        BinaryOperator<FullAcc<L, R>> combine = (acc, other) ->
+                (FullAcc<L, R>) acc.combine(other);
 
-        Function<AccAll<L, R>, Either<List<L>, List<R>>> finish = acc -> {
-            if (!acc.isLeftEmpty()) {
-                return Either.left(acc.left());
-            } else {
-                return Either.right(acc.right());
-            }
-        };
-
-        return new CollectorImpl<>(AccAll::new, accumulate, combine, finish);
+        return new CollectorImpl<>(FullAcc::new, accumulate, combine, FullAcc::finish);
     }
 
     /**
