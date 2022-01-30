@@ -1,8 +1,13 @@
 package io.jbock.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -12,7 +17,96 @@ import java.util.stream.Collectors;
  */
 public final class Eithers {
 
+    static final Set<Collector.Characteristics> CH_NOID = Set.of();
+
     private Eithers() {
+    }
+
+    /**
+     * Simple implementation class for a collector with characteristic {@link #CH_NOID}.
+     *
+     * @param <T> the type of elements to be collected
+     * @param <R> the type of the result
+     */
+    private static class CollectorImpl<T, A, R> implements Collector<T, A, R> {
+        final Supplier<A> supplier;
+        final BiConsumer<A, T> accumulator;
+        final BinaryOperator<A> combiner;
+        final Function<A, R> finisher;
+
+        CollectorImpl(Supplier<A> supplier,
+                      BiConsumer<A, T> accumulator,
+                      BinaryOperator<A> combiner,
+                      Function<A, R> finisher) {
+            this.supplier = supplier;
+            this.accumulator = accumulator;
+            this.combiner = combiner;
+            this.finisher = finisher;
+        }
+
+        @Override
+        public BiConsumer<A, T> accumulator() {
+            return accumulator;
+        }
+
+        @Override
+        public Supplier<A> supplier() {
+            return supplier;
+        }
+
+        @Override
+        public BinaryOperator<A> combiner() {
+            return combiner;
+        }
+
+        @Override
+        public Function<A, R> finisher() {
+            return finisher;
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return CH_NOID;
+        }
+    }
+
+    private static abstract class BasicAcc<L, R> {
+        List<R> right;
+
+        final List<R> right() {
+            if (right == null) {
+                right = new ArrayList<>();
+            }
+            return right;
+        }
+    }
+
+    // visible for testing
+    static final class Acc<L, R> extends BasicAcc<L, R> {
+        private L left;
+    }
+
+    // visible for testing
+    static final class AccAll<L, R> extends BasicAcc<L, R> {
+        private List<L> left;
+
+        void addLeft(L newLeft) {
+            if (left == null) {
+                left = new ArrayList<>();
+            }
+            left.add(newLeft);
+        }
+
+        private List<L> left() {
+            if (left == null) {
+                left = new ArrayList<>();
+            }
+            return left;
+        }
+
+        boolean isLeftEmpty() {
+            return left == null || left().isEmpty();
+        }
     }
 
     /**
@@ -30,7 +124,35 @@ public final class Eithers {
      *         if an LHS value exists, a Left containing the first LHS value
      */
     public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<L, List<R>>> toValidList() {
-        return new ValidatingCollector<>();
+
+        BiConsumer<Acc<L, R>, Either<? extends L, ? extends R>> accumulate = (acc, either) -> {
+            if (acc.left != null) {
+                return;
+            }
+            either.ifLeftOrElse(
+                    left -> acc.left = left,
+                    acc.right()::add);
+        };
+
+        BinaryOperator<Acc<L, R>> combine = (acc, other) -> {
+            if (acc.left != null) {
+                return acc;
+            }
+            if (other.left != null) {
+                return other;
+            }
+            acc.right().addAll(other.right());
+            return acc;
+        };
+
+        Function<Acc<L, R>, Either<L, List<R>>> finish = acc -> {
+            if (acc.left != null) {
+                return Either.left(acc.left);
+            }
+            return Either.right(acc.right());
+        };
+
+        return new CollectorImpl<>(Acc::new, accumulate, combine, finish);
     }
 
     /**
@@ -49,7 +171,31 @@ public final class Eithers {
      *         of all LHS values in the stream
      */
     public static <L, R> Collector<Either<? extends L, ? extends R>, ?, Either<List<L>, List<R>>> toValidListAll() {
-        return new ValidatingCollectorAll<>();
+
+        BiConsumer<AccAll<L, R>, Either<? extends L, ? extends R>> accumulate = (acc, either) ->
+                either.ifLeftOrElse(acc::addLeft, acc.right()::add);
+
+        BinaryOperator<AccAll<L, R>> combine = (acc, other) -> {
+            if (!acc.isLeftEmpty()) {
+                acc.left().addAll(other.left());
+                return acc;
+            }
+            if (!other.isLeftEmpty()) {
+                return other;
+            }
+            acc.right().addAll(other.right());
+            return acc;
+        };
+
+        Function<AccAll<L, R>, Either<List<L>, List<R>>> finish = acc -> {
+            if (!acc.isLeftEmpty()) {
+                return Either.left(acc.left());
+            } else {
+                return Either.right(acc.right());
+            }
+        };
+
+        return new CollectorImpl<>(AccAll::new, accumulate, combine, finish);
     }
 
     /**

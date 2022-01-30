@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import static io.jbock.util.Eithers.optionalList;
 import static io.jbock.util.Eithers.toOptionalList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EithersTest {
 
@@ -17,16 +16,6 @@ class EithersTest {
     void testOptionalList() {
         assertEquals(Optional.empty(), optionalList(List.of()));
         assertEquals(Optional.of(List.of(1)), optionalList(List.of(1)));
-    }
-
-    @Test
-    void testToValidList() {
-        assertTrue(Eithers.toValidList() instanceof ValidatingCollector);
-    }
-
-    @Test
-    void testToValidListAll() {
-        assertTrue(Eithers.toValidListAll() instanceof ValidatingCollectorAll);
     }
 
     @Test

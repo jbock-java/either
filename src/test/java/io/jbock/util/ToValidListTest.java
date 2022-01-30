@@ -3,12 +3,13 @@ package io.jbock.util;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collector;
 
 import static io.jbock.util.Either.left;
 import static io.jbock.util.Either.right;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ValidatingCollectorTest {
+class ToValidListTest {
 
     @Test
     void associativityTest() {
@@ -32,20 +33,22 @@ class ValidatingCollectorTest {
     }
 
     private Either<String, List<Integer>> apply(List<Either<String, Integer>> data) {
-        return data.stream().collect(new ValidatingCollector<>());
+        return data.stream().collect(Eithers.toValidList());
     }
 
     private void checkAssociativity(Either<String, Integer> t1, Either<String, Integer> t2) {
-        ValidatingCollector<String, Integer> coll = new ValidatingCollector<>();
+        @SuppressWarnings("unchecked")
+        Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, Integer>, Either<String, List<Integer>>> coll =
+                (Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, Integer>, Either<String, List<Integer>>>) Eithers.<String, Integer>toValidList();
 
-        ValidatingCollector.Acc<String, Integer> a1 = coll.supplier().get();
+        Eithers.Acc<String, Integer> a1 = coll.supplier().get();
         coll.accumulator().accept(a1, t1);
         coll.accumulator().accept(a1, t2);
         Either<String, List<Integer>> r1 = coll.finisher().apply(a1);// result without splitting
 
-        ValidatingCollector.Acc<String, Integer> a2 = coll.supplier().get();
+        Eithers.Acc<String, Integer> a2 = coll.supplier().get();
         coll.accumulator().accept(a2, t1);
-        ValidatingCollector.Acc<String, Integer> a3 = coll.supplier().get();
+        Eithers.Acc<String, Integer> a3 = coll.supplier().get();
         coll.accumulator().accept(a3, t2);
         Either<String, List<Integer>> r2 = coll.finisher().apply(coll.combiner().apply(a2, a3));// result with splitting
         assertEquals(r1, r2);
