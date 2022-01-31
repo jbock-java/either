@@ -38,17 +38,17 @@ class ToValidListAllTest {
 
     private void checkAssociativity(Either<String, Integer> t1, Either<String, Integer> t2) {
         @SuppressWarnings("unchecked")
-        Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, Integer>, Either<List<String>, List<Integer>>> coll =
-                (Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, Integer>, Either<List<String>, List<Integer>>>) Eithers.<String, Integer>toValidListAll();
+        Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, ?, Integer>, Either<List<String>, List<Integer>>> coll =
+                (Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, ?, Integer>, Either<List<String>, List<Integer>>>) Eithers.<String, Integer>toValidListAll();
 
-        Eithers.Acc<String, Integer> a1 = coll.supplier().get();
+        Eithers.Acc<String, ?, Integer> a1 = coll.supplier().get();
         coll.accumulator().accept(a1, t1);
         coll.accumulator().accept(a1, t2);
         Either<List<String>, List<Integer>> r1 = coll.finisher().apply(a1);// result without splitting
 
-        Eithers.Acc<String, Integer> a2 = coll.supplier().get();
+        Eithers.Acc<String, ?, Integer> a2 = coll.supplier().get();
         coll.accumulator().accept(a2, t1);
-        Eithers.Acc<String, Integer> a3 = coll.supplier().get();
+        Eithers.Acc<String, ?, Integer> a3 = coll.supplier().get();
         coll.accumulator().accept(a3, t2);
         Either<List<String>, List<Integer>> r2 = coll.finisher().apply(coll.combiner().apply(a2, a3));// result with splitting
         assertEquals(r1, r2);

@@ -71,11 +71,11 @@ public final class Eithers {
     }
 
     // visible for testing
-    static abstract class Acc<L, R> {
+    static abstract class Acc<L, C, R> {
         private List<R> right;
 
         final List<R> right() {
-            return right;
+            return right == null ? List.of() : right;
         }
 
         final void addRight(R value) {
@@ -88,11 +88,9 @@ public final class Eithers {
             right.add(value);
         }
 
-        final Acc<L, R> combine(Acc<L, R> other) {
+        final Acc<L, C, R> combine(Acc<L, C, R> other) {
             if (isLeft()) {
-                if (other.isLeft()) {
-                    combineLeft(other);
-                }
+                combineLeft(other.left());
                 return this;
             }
             if (other.isLeft()) {
@@ -108,16 +106,26 @@ public final class Eithers {
             return this;
         }
 
-        abstract void combineLeft(Acc<L, R> other);
+        abstract void combineLeft(C otherLeft);
 
         abstract boolean isLeft();
+
+        abstract C left();
+
+        Either<C, List<R>> finish() {
+            if (isLeft()) {
+                return Either.left(left());
+            }
+            return Either.right(right());
+        }
     }
 
-    private static class ShortcuttingAcc<L, R> extends Acc<L, R> {
+    private static class ShortcuttingAcc<L, R> extends Acc<L, L, R> {
         L left;
 
         @Override
-        void combineLeft(Acc<L, R> other) {
+        void combineLeft(L otherLeft) {
+            addLeft(otherLeft);
         }
 
         @Override
@@ -126,27 +134,24 @@ public final class Eithers {
         }
 
         void addLeft(L value) {
-            if (left != null) {
-                return;
+            if (left == null) {
+                left = value;
             }
-            left = value;
         }
 
-        Either<L, List<R>> finish() {
-            if (left != null) {
-                return Either.left(left);
-            }
-            return Either.right(right() == null ? List.of() : right());
+        L left() {
+            return left;
         }
     }
 
-    private static class FullAcc<L, R> extends Acc<L, R> {
+    private static class FullAcc<L, R> extends Acc<L, List<L>, R> {
         List<L> left;
 
         @Override
-        void combineLeft(Acc<L, R> other) {
-            // TODO remove cast
-            left.addAll(((FullAcc<L, R>) other).left);
+        void combineLeft(List<L> otherLeft) {
+            if (otherLeft != null && !otherLeft.isEmpty()) {
+                left.addAll(otherLeft);
+            }
         }
 
         @Override
@@ -161,11 +166,9 @@ public final class Eithers {
             left.add(value);
         }
 
-        Either<List<L>, List<R>> finish() {
-            if (left != null && !left.isEmpty()) {
-                return Either.left(left);
-            }
-            return Either.right(right() == null ? List.of() : right());
+        @Override
+        List<L> left() {
+            return left;
         }
     }
 
