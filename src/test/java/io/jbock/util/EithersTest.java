@@ -16,11 +16,13 @@ class EithersTest {
     void testOptionalList() {
         assertEquals(Optional.empty(), optionalList(List.of()));
         assertEquals(Optional.of(List.of(1)), optionalList(List.of(1)));
+        assertEquals(Optional.of(List.of(1, 1)), optionalList(List.of(1, 1)));
     }
 
     @Test
     void testToOptionalList() {
         assertEquals(Optional.empty(), Stream.of().collect(toOptionalList()));
         assertEquals(Optional.of(List.of(1)), Stream.of(1).collect(toOptionalList()));
+        assertEquals(Optional.of(List.of(1, 1)), Stream.of(1, 1).collect(toOptionalList()));
     }
 }

@@ -1,9 +1,10 @@
 package io.jbock.util;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Internal implementation of a Left-Either.
@@ -16,7 +17,7 @@ final class Left<L, R> extends Either<L, R> {
     private final L value;
 
     Left(L value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = requireNonNull(value);
     }
 
     @Override
@@ -112,6 +113,6 @@ final class Left<L, R> extends Either<L, R> {
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return 31 * value.hashCode();
     }
 }

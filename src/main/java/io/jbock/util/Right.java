@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Internal implementation of a Right-Either.
  *
@@ -16,7 +18,7 @@ final class Right<L, R> extends Either<L, R> {
     private final R value;
 
     Right(R value) {
-        this.value = Objects.requireNonNull(value);
+        this.value = requireNonNull(value);
     }
 
     @Override
@@ -112,6 +114,6 @@ final class Right<L, R> extends Either<L, R> {
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return Objects.hash(value);
     }
 }

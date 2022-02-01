@@ -34,8 +34,7 @@ tasks.withType(GenerateModuleMetadata) {
 }
 
 dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter:5.7.1')
-    testImplementation('com.google.guava:guava-testlib:30.1.1-jre')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 }
 
 jar {

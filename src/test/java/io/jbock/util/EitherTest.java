@@ -1,6 +1,5 @@
 package io.jbock.util;
 
-import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,15 +16,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EitherTest {
 
     @Test
-    void testEquals() {
-        new EqualsTester()
-                .addEqualityGroup(Either.right("1"), Either.right("1"))
-                .addEqualityGroup(Either.right("2"), Either.right("2"))
-                .testEquals();
-        new EqualsTester()
-                .addEqualityGroup(Either.left("1"), Either.left("1"))
-                .addEqualityGroup(Either.left("2"), Either.left("2"))
-                .testEquals();
+    void testEqualsAndHashCode() {
+        assertEquals(Either.right("1"), Either.right("1"));
+        assertEquals(Either.right("1").hashCode(), Either.right("1").hashCode());
+
+        assertNotEquals(Either.right("1"), Either.right("2"));
+        assertNotEquals(Either.right("1").hashCode(), Either.right("2").hashCode());
+        assertNotEquals(Either.<Object, Object>right("1"), Either.right(1));
+
+        assertEquals(Either.left("1"), Either.left("1"));
+        assertEquals(Either.left("1").hashCode(), Either.left("1").hashCode());
+
+        assertNotEquals(Either.left("1"), Either.left("2"));
+        assertNotEquals(Either.left("1").hashCode(), Either.left("2").hashCode());
+        assertNotEquals(Either.<Object, Object>left("1"), Either.left(1));
+
+        assertNotEquals(Either.right("1"), Either.left("1"));
+        assertNotEquals(Either.right("1").hashCode(), Either.left("1").hashCode());
     }
 
     @Test
