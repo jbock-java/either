@@ -70,19 +70,22 @@ public final class Eithers {
         }
     }
 
+    /**
+     * @param <L> Type of LHS values in the stream
+     * @param <C> Type of collected LHS values
+     * @param <R> Type of RHS values in the stream
+     */
     // visible for testing
     static abstract class Acc<L, C, R> {
         private ArrayList<R> right;
 
         abstract void combineLeft(C otherLeft);
 
-        abstract boolean isLeft();
-
-        /** Returns {@code null} iff {@link #isLeft()} */
+        // nullable
         abstract C left();
 
         final void addRight(R value) {
-            if (isLeft()) {
+            if (left() != null) {
                 return;
             }
             if (right == null) {
@@ -92,11 +95,11 @@ public final class Eithers {
         }
 
         final Acc<L, C, R> combine(Acc<L, C, R> other) {
-            if (isLeft()) {
+            if (left() != null) {
                 combineLeft(other.left());
                 return this;
             }
-            if (other.isLeft()) {
+            if (other.left() != null) {
                 return other;
             }
             if (other.right == null) {
@@ -111,8 +114,9 @@ public final class Eithers {
         }
 
         final Either<C, List<R>> finish() {
-            return isLeft()
-                    ? Either.left(left())
+            C left = left();
+            return left != null
+                    ? Either.left(left)
                     : Either.right(right == null ? List.of() : right);
         }
     }
@@ -123,11 +127,6 @@ public final class Eithers {
         @Override
         void combineLeft(L otherLeft) {
             addLeft(otherLeft);
-        }
-
-        @Override
-        boolean isLeft() {
-            return left != null;
         }
 
         void addLeft(L value) {
@@ -148,14 +147,9 @@ public final class Eithers {
         void combineLeft(List<L> otherLeft) {
             if (left == null) {
                 left = otherLeft;
-            } else if (otherLeft != null && !otherLeft.isEmpty()) {
+            } else if (otherLeft != null) {
                 left.addAll(otherLeft);
             }
-        }
-
-        @Override
-        boolean isLeft() {
-            return left != null && !left.isEmpty();
         }
 
         void addLeft(L value) {
