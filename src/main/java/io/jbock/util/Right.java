@@ -1,6 +1,5 @@
 package io.jbock.util;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -114,6 +113,6 @@ final class Right<L, R> extends Either<L, R> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return value.hashCode();
     }
 }

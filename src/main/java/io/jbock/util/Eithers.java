@@ -72,11 +72,14 @@ public final class Eithers {
 
     // visible for testing
     static abstract class Acc<L, C, R> {
-        private List<R> right;
+        private ArrayList<R> right;
 
-        final List<R> right() {
-            return right == null ? List.of() : right;
-        }
+        abstract void combineLeft(C otherLeft);
+
+        abstract boolean isLeft();
+
+        /** Returns {@code null} iff {@link #isLeft()} */
+        abstract C left();
 
         final void addRight(R value) {
             if (isLeft()) {
@@ -100,23 +103,17 @@ public final class Eithers {
                 return this;
             }
             if (right == null) {
-                right = new ArrayList<>();
+                right = other.right;
+            } else {
+                right.addAll(other.right);
             }
-            right.addAll(other.right);
             return this;
         }
 
-        abstract void combineLeft(C otherLeft);
-
-        abstract boolean isLeft();
-
-        abstract C left();
-
-        Either<C, List<R>> finish() {
-            if (isLeft()) {
-                return Either.left(left());
-            }
-            return Either.right(right());
+        final Either<C, List<R>> finish() {
+            return isLeft()
+                    ? Either.left(left())
+                    : Either.right(right == null ? List.of() : right);
         }
     }
 
@@ -149,7 +146,9 @@ public final class Eithers {
 
         @Override
         void combineLeft(List<L> otherLeft) {
-            if (otherLeft != null && !otherLeft.isEmpty()) {
+            if (left == null) {
+                left = otherLeft;
+            } else if (otherLeft != null && !otherLeft.isEmpty()) {
                 left.addAll(otherLeft);
             }
         }
