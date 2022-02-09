@@ -1,7 +1,5 @@
 [![either](https://maven-badges.herokuapp.com/maven-central/io.github.jbock-java/either/badge.svg?subject=either)](https://maven-badges.herokuapp.com/maven-central/io.github.jbock-java/either)
 
-### `either:1.5`
-
 The `Either` type is closely related to `Optional`, but can have different "failure" states, other than only *empty*.
 `Either` can be used to collect error messages in stream operations,
 or simply as a lightweight alternative to throwing an Exception.
