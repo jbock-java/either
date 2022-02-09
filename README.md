@@ -31,8 +31,8 @@ Repeating the result type in the `map` operation is necessary, due to a limitati
 ### Working with Either
 
 `Either` has the familiar methods from `Optional`: `map`, `flatMap` and `filter`.
-These will always return *Left*  value unchanged,
-just like the corresponding methods in `Optional` which return an *empty* value unchanged.
+These will always return a *Left* value unchanged,
+just like the corresponding methods in `Optional`, which return an *empty* value unchanged.
 
 Symmetrically there are `mapLeft`, `flatMapLeft` and `filterLeft`, which return a *Right* value unchanged.
 
