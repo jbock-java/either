@@ -30,10 +30,11 @@ Repeating the result type in the `map` operation is necessary, due to a limitati
 
 ### Working with Either
 
-An Either has the familiar methods `map`, `flatMap` and `filter`.
-All of these work on *Right* Eithers, and leave a *Left* unchanged.
-This is intuitive, because the corresponding methods in `Optional` leave *empty* unchanged.
-Symmetrically there are `mapLeft`, `flatMapLeft` and `filterLeft`, which leave a *Right* unchanged instead.
+`Either` has the familiar methods from `Optional`: `map`, `flatMap` and `filter`.
+These will always return *Left*  value unchanged,
+just like the corresponding methods in `Optional` which return an *empty* value unchanged.
+
+Symmetrically there are `mapLeft`, `flatMapLeft` and `filterLeft`, which return a *Right* value unchanged.
 
 Finally there is ~~ifPresentOrElse~~ `ifLeftOrElse` (1.3) and the all-powerful `fold` method,
 as well as `getRight` and `getLeft` to convert back to `Optional`.
