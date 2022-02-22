@@ -26,7 +26,7 @@ fi
 
 read -e -p "Upload successful. Also tag? [y/N]"
 if [[ "$REPLY" == [Yy]* ]]; then
-  git tag "v${VERSION}"
+  git tag "${VERSION}"
   git push origin --tags
 fi
 
