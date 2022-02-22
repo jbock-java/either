@@ -41,8 +41,8 @@ as well as `getRight` and `getLeft` to convert back to `Optional`.
 
 ### Working with streams
 
-If you have a stream of `Either`, you can search for *Left* values using one of the collectors
-`toValidList` and `toValidListAll`:
+If you have a stream of `Either`, you can search for *Left* values with
+`firstFailure` or `allFailures`:
 
 ````java
 Either<BigInteger, List<BigInteger>> twoPrimesOrOneComposite = Stream.generate(() ->
