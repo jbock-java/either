@@ -33,13 +33,13 @@ class ToValidListTest {
     }
 
     private Either<String, List<Integer>> apply(List<Either<String, Integer>> data) {
-        return data.stream().collect(Eithers.toValidList());
+        return data.stream().collect(Eithers.firstFailure());
     }
 
     private void checkAssociativity(Either<String, Integer> t1, Either<String, Integer> t2) {
         @SuppressWarnings("unchecked")
         Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, ?, Integer>, Either<String, List<Integer>>> coll =
-                (Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, ?, Integer>, Either<String, List<Integer>>>) Eithers.<String, Integer>toValidList();
+                (Collector<Either<? extends String, ? extends Integer>, Eithers.Acc<String, ?, Integer>, Either<String, List<Integer>>>) Eithers.<String, Integer>firstFailure();
 
         Eithers.Acc<String, ?, Integer> a1 = coll.supplier().get();
         coll.accumulator().accept(a1, t1);
