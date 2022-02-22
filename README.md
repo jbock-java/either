@@ -51,7 +51,7 @@ Either<BigInteger, List<BigInteger>> twoPrimesOrOneComposite = Stream.generate((
         .limit(2)
         .<Either<BigInteger, BigInteger>>map(n -> n.isProbablePrime(10) ?
                 Either.right(n) : Either.left(n))
-        .collect(Eithers.toValidList());
+        .collect(Eithers.firstFailure());
 ````
 
 ### Testimonies
