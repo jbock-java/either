@@ -26,7 +26,7 @@ Either<String, BigInteger> possiblyPrime = Stream.generate(() ->
         .orElseGet(() -> Either.left("no such value"));
 ````
 
-Repeating the result type in the `map` operation is necessary, due to a limitation of Java's typechecker.
+Repeating the result type in the penultimate line is necessary, due to a limitation of Java's typechecker.
 
 ### Working with Either
 
