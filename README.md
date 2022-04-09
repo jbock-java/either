@@ -41,7 +41,7 @@ as well as `getRight` and `getLeft` to convert back to `Optional`.
 
 ### Working with streams
 
-If you have a stream of `Either`, you can search for *Left* values with
+If you have a stream of `Either`, you can search for *Left* values with custom collectors
 `firstFailure` or `allFailures`:
 
 ````java
