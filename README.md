@@ -21,9 +21,9 @@ Either<String, BigInteger> possiblyPrime = Stream.generate(() ->
         .map(BigInteger::valueOf)
         .limit(10)
         .filter(n -> n.isProbablePrime(10))
-        .findAny()
-        .<Either<String, BigInteger>>map(Either::right)
-        .orElseGet(() -> Either.left("no such value"));
+        .findAny()                                      // Optional<BigInteger>
+        .<Either<String, BigInteger>>map(Either::right) // Optional<Either<String, BigInteger>>
+        .orElseGet(() -> Either.left("no such value")); // Either<String, BigInteger>
 ````
 
 Repeating the result type in the penultimate line is necessary, due to a limitation of Java's typechecker.
