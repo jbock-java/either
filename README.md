@@ -12,7 +12,7 @@ This particular `Either` is lightweight, and very easy to work with if you're al
 
 Sometimes, it can be desirable to put *something* into the "empty" value of an `Optional`.
 Let's call this "adding a *Left* value", since this value is no longer *empty*.
-Going from Optional from Either is as easy as mapping with `Either::right`,
+Going from Optional to Either is as easy as mapping with `Either::right`,
 followed by an `orElseGet` to supply the Left value:
 
 ````java
