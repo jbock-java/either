@@ -6,12 +6,6 @@ plugins {
 
 group = 'io.github.jbock-java'
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 compileJava {
     options.encoding = 'UTF-8'
     sourceCompatibility = '11'
@@ -34,7 +28,7 @@ tasks.withType(GenerateModuleMetadata) {
 }
 
 dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.10.2')
 }
 
 jar {
