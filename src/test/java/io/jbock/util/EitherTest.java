@@ -32,13 +32,12 @@ class EitherTest {
         assertNotEquals(Either.<Object, Object>left("1"), Either.left(1));
 
         assertNotEquals(Either.right("1"), Either.left("1"));
-        assertNotEquals(Either.right("1").hashCode(), Either.left("1").hashCode());
     }
 
     @Test
     void testToString() {
-        assertEquals("Right[1]", Either.right("1").toString());
-        assertEquals("Left[1]", Either.left("1").toString());
+        assertEquals("Right[value=1]", Either.right("1").toString());
+        assertEquals("Left[value=1]", Either.left("1").toString());
     }
 
     @Test

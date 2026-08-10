@@ -1,5 +1,6 @@
 package io.jbock.util;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -16,10 +17,7 @@ import java.util.function.Function;
  * @param <L> the type of the LHS value
  * @param <R> the type of the RHS value
  */
-public abstract class Either<L, R> {
-
-    Either() {
-    }
+public interface Either<L, R> {
 
     /**
      * Returns a Left containing the given non-{@code null} LHS value.
@@ -30,8 +28,8 @@ public abstract class Either<L, R> {
      * @return a Left containing the LHS value
      * @throws NullPointerException if value is {@code null}
      */
-    public static <L, R> Either<L, R> left(L value) {
-        return new Left<>(value);
+    static <L, R> Either<L, R> left(L value) {
+        return new Left<>(Objects.requireNonNull(value));
     }
 
     /**
@@ -43,8 +41,8 @@ public abstract class Either<L, R> {
      * @return a Right containing the RHS value
      * @throws NullPointerException if value is {@code null}
      */
-    public static <L, R> Either<L, R> right(R value) {
-        return new Right<>(value);
+    static <L, R> Either<L, R> right(R value) {
+        return new Right<>(Objects.requireNonNull(value));
     }
 
     /**
@@ -58,7 +56,7 @@ public abstract class Either<L, R> {
      *         the result of applying {@code mapper} to the RHS value
      * @throws NullPointerException if the {@code mapper} returns a {@code null} result
      */
-    public abstract <R2> Either<L, R2> map(
+    <R2> Either<L, R2> map(
             Function<? super R, ? extends R2> mapper);
 
     /**
@@ -70,7 +68,7 @@ public abstract class Either<L, R> {
      * @return an equivalent instance if this is a Left, otherwise the result of
      *         applying {@code mapper} to the RHS value
      */
-    public abstract <R2> Either<L, R2> flatMap(
+    <R2> Either<L, R2> flatMap(
             Function<? super R, ? extends Either<? extends L, ? extends R2>> mapper);
 
     /**
@@ -83,7 +81,7 @@ public abstract class Either<L, R> {
      * @param predicate a function that acts as a filter predicate
      * @return filter result
      */
-    public abstract Either<L, R> filter(
+    Either<L, R> filter(
             Function<? super R, Optional<? extends L>> predicate);
 
     /**
@@ -96,7 +94,7 @@ public abstract class Either<L, R> {
      *         the result of applying {@code mapper} to the LHS value
      * @throws NullPointerException if the {@code mapper} returns a {@code null} result
      */
-    public abstract <L2> Either<L2, R> mapLeft(
+    <L2> Either<L2, R> mapLeft(
             Function<? super L, ? extends L2> mapper);
 
     /**
@@ -108,7 +106,7 @@ public abstract class Either<L, R> {
      * @return an equivalent instance if this is a Right, otherwise the result of
      *         applying {@code mapper} to the LHS value
      */
-    public abstract <L2> Either<L2, R> flatMapLeft(
+    <L2> Either<L2, R> flatMapLeft(
             Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper);
 
     /**
@@ -121,7 +119,7 @@ public abstract class Either<L, R> {
      * @param predicate a function that acts as a filter predicate
      * @return filter result
      */
-    public abstract Either<L, R> filterLeft(
+    Either<L, R> filterLeft(
             Function<? super L, Optional<? extends R>> predicate);
 
     /**
@@ -133,7 +131,7 @@ public abstract class Either<L, R> {
      * @param <U> the result type of both {@code leftMapper} and {@code rightMapper}
      * @return the result of applying either {@code leftMapper} or {@code rightMapper}
      */
-    public abstract <U> U fold(
+    <U> U fold(
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper);
 
@@ -144,7 +142,7 @@ public abstract class Either<L, R> {
      * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
      */
-    public abstract void ifLeftOrElse(
+    void ifLeftOrElse(
             Consumer<? super L> leftAction,
             Consumer<? super R> rightAction);
 
@@ -157,7 +155,7 @@ public abstract class Either<L, R> {
      * @return the RHS value, if this is a Right
      * @throws X the result of applying {@code exceptionSupplier} to the LHS value, if this is a Left
      */
-    public abstract <X extends Throwable> R orElseThrow(
+    <X extends Throwable> R orElseThrow(
             Function<? super L, ? extends X> exceptionSupplier) throws X;
 
     /**
@@ -165,14 +163,14 @@ public abstract class Either<L, R> {
      *
      * @return {@code true} if this is a Left, otherwise {@code false}
      */
-    public abstract boolean isLeft();
+    boolean isLeft();
 
     /**
      * Returns {@code true} if this is a Right, otherwise {@code false}.
      *
      * @return {@code true} if this is a Right, otherwise {@code false}
      */
-    public final boolean isRight() {
+    default boolean isRight() {
         return !isLeft();
     }
 
@@ -182,7 +180,7 @@ public abstract class Either<L, R> {
      *
      * @return the LHS value if this is a Left, otherwise an empty {@code Optional}
      */
-    public abstract Optional<L> getLeft();
+    Optional<L> getLeft();
 
     /**
      * If this is a Right, returns an {@code Optional} containing the RHS value.
@@ -190,15 +188,5 @@ public abstract class Either<L, R> {
      *
      * @return the RHS value if this is a Right, otherwise an empty {@code Optional}
      */
-    public abstract Optional<R> getRight();
-
-    /**
-     * Returns a string representation of this {@code Either}
-     * suitable for debugging.  The exact presentation format is unspecified and
-     * may vary between implementations and versions.
-     *
-     * @return the string representation of this instance
-     */
-    @Override
-    public abstract String toString();
+    Optional<R> getRight();
 }

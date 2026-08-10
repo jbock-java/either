@@ -4,21 +4,13 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Internal implementation of a Left-Either.
  *
  * @param <L> the type of the LHS value
  * @param <R> the type of the RHS value
  */
-final class Left<L, R> extends Either<L, R> {
-
-    private final L value;
-
-    Left(L value) {
-        this.value = requireNonNull(value);
-    }
+record Left<L, R>(L value) implements Either<L, R> {
 
     @Override
     public Optional<L> getLeft() {
@@ -90,29 +82,5 @@ final class Left<L, R> extends Either<L, R> {
     @Override
     public <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) throws X {
         throw exceptionSupplier.apply(value);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Left[%s]", value);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof Left)) {
-            return false;
-        }
-
-        Left<?, ?> other = (Left<?, ?>) obj;
-        return value.equals(other.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return 31 * value.hashCode();
     }
 }
