@@ -7,8 +7,8 @@ import java.util.function.Function;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
- * can be either be a "Left", containing a LHS value or a "Right" containing a RHS value,
- * but it cannot be "neither" or "both".
+ * can be either be a "Left", containing an LHS value or a "Right" containing an RHS value,
+ * but it cannot be "neither" nor "both".
  *
  * <p>An Either can be used to express a success or failure case. By convention,
  * a Right contains the result of a successful computation,
@@ -17,7 +17,7 @@ import java.util.function.Function;
  * @param <L> the type of the LHS value
  * @param <R> the type of the RHS value
  */
-public interface Either<L, R> {
+public sealed interface Either<L, R> permits Left, Right {
 
     /**
      * Returns a Left containing the given non-{@code null} LHS value.
@@ -48,7 +48,7 @@ public interface Either<L, R> {
     /**
      * If this is a Right, returns a Right containing the result of applying
      * the mapper function to the RHS value.
-     * Otherwise returns a Left containing the LHS value.
+     * Otherwise, returns a Left containing the LHS value.
      *
      * @param mapper the function to apply to the RHS value, if this is a Right
      * @param <R2> the new RHS type
@@ -61,7 +61,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Right, returns the result of applying the mapper function to the RHS value.
-     * Otherwise returns a Left containing the LHS value.
+     * Otherwise, returns a Left containing the LHS value.
      *
      * @param mapper a mapper function
      * @param <R2> the new RHS type
@@ -86,7 +86,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Left, returns a Left containing the result of applying the mapper function to the LHS value.
-     * Otherwise returns a Right containing the RHS value.
+     * Otherwise, returns a Right containing the RHS value.
      *
      * @param mapper the function to apply to the LHS value
      * @param <L2> the new LHS type
@@ -99,7 +99,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Left, returns the result of applying the mapper function to the LHS value.
-     * Otherwise returns a Right containing the RHS value.
+     * Otherwise, returns a Right containing the RHS value.
      *
      * @param mapper a mapper function
      * @param <L2> the new LHS type
@@ -108,6 +108,24 @@ public interface Either<L, R> {
      */
     <L2> Either<L2, R> flatMapLeft(
             Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper);
+
+    /**
+     * Returns the receiver object unchanged. This method should only be invoked
+     * if this is provably a Left.
+     *
+     * @return the same object
+     * @throws UnsupportedOperationException if this is a Right
+     */
+    <R2> Either<L, R2> pinLeft();
+
+    /**
+     * Returns the receiver object unchanged. This method should only be invoked
+     * if this is provably a Right.
+     *
+     * @return the same object
+     * @throws UnsupportedOperationException if this is a Left
+     */
+    <L2> Either<L2, R> pinRight();
 
     /**
      * If this is a Right, returns a Right containing the RHS value.
@@ -124,7 +142,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Left, returns the result of applying the {@code leftMapper} to the LHS value.
-     * Otherwise returns the result of applying the {@code rightMapper} to the RHS value.
+     * Otherwise, returns the result of applying the {@code rightMapper} to the RHS value.
      *
      * @param leftMapper the function to apply if this is a Left
      * @param rightMapper the function to apply if this is a Right
@@ -137,7 +155,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Left, performs the {@code leftAction} with the LHS value.
-     * Otherwise performs the {@code rightAction} with the RHS value.
+     * Otherwise, performs the {@code rightAction} with the RHS value.
      *
      * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
@@ -148,7 +166,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Right, returns the RHS value.
-     * Otherwise throws an exception produced by the exception supplying function.
+     * Otherwise, throws an exception produced by the exception supplying function.
      *
      * @param exceptionSupplier exception supplying function
      * @param <X> type of the exception
@@ -176,7 +194,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Left, returns an {@code Optional} containing the LHS value.
-     * Otherwise returns an empty {@code Optional}.
+     * Otherwise, returns an empty {@code Optional}.
      *
      * @return the LHS value if this is a Left, otherwise an empty {@code Optional}
      */
@@ -184,7 +202,7 @@ public interface Either<L, R> {
 
     /**
      * If this is a Right, returns an {@code Optional} containing the RHS value.
-     * Otherwise returns an empty {@code Optional}.
+     * Otherwise, returns an empty {@code Optional}.
      *
      * @return the RHS value if this is a Right, otherwise an empty {@code Optional}
      */

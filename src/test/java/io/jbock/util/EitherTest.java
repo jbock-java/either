@@ -3,6 +3,7 @@ package io.jbock.util;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -140,5 +141,17 @@ class EitherTest {
         assertEquals("1", x.getMessage());
         Either<String, String> right = Either.right("2");
         assertEquals("2", right.orElseThrow(IllegalArgumentException::new));
+    }
+
+    @Test
+    void testPin() {
+        Either<String, Integer> left = Either.left("1");
+        Either<String, LocalDate> left2 = left.pinLeft();
+        assertThrows(UnsupportedOperationException.class, left::pinRight);
+        assertEquals(Either.left("1"), left2);
+        Either<Integer, String> right = Either.right("2");
+        Either<LocalDate, String> right2 = right.pinRight();
+        assertThrows(UnsupportedOperationException.class, right::pinLeft);
+        assertEquals(Either.right("2"), right2);
     }
 }

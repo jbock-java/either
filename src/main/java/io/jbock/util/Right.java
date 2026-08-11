@@ -63,6 +63,18 @@ record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
+    public <R2> Either<L, R2> pinLeft() {
+        throw new UnsupportedOperationException("not a Left");
+    }
+
+    @Override
+    public <L2> Either<L2, R> pinRight() {
+        @SuppressWarnings("unchecked")
+        Right<L2, R> result = (Right<L2, R>) this;
+        return result;
+    }
+
+    @Override
     public Either<L, R> filterLeft(Function<? super L, Optional<? extends R>> predicate) {
         return this;
     }
