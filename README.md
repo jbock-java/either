@@ -1,4 +1,4 @@
-[![either](https://maven-badges.herokuapp.com/maven-central/io.github.jbock-java/either/badge.svg?subject=either)](https://maven-badges.herokuapp.com/maven-central/io.github.jbock-java/either)
+[![either](https://img.shields.io/maven-central/v/io.github.jbock-java/either)](https://central.sonatype.com/artifact/io.github.jbock-java/either)
 
 The `Either` type is closely related to `Optional`, but can have different "failure" states, other than only *empty*.
 `Either` can be used to collect error messages in stream operations,
