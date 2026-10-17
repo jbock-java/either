@@ -93,13 +93,9 @@ public final class Eithers {
     }
 
     /**
-     * If the provided list is empty, returns an empty {@link Optional}.
-     * Otherwise, returns an {@code Optional} containing the nonempty
-     * input list.
-     *
-     * <p>Note: The resulting {@code Optional} might be used in a
-     * {@link Either#filter(Function) filter} or
-     * {@link Either#filterLeft(Function) filterLeft} operation.
+     * If the provided list is empty or null, this method
+     * returns an empty {@link Optional}. Otherwise it returns
+     * an {@code Optional} containing the input list.
      *
      * @see #toOptionalList()
      * @param values a list of objects
@@ -108,7 +104,7 @@ public final class Eithers {
      *         contains a nonempty list
      */
     public static <T> Optional<List<T>> optionalList(List<? extends T> values) {
-        if (values.isEmpty()) {
+        if (values == null || values.isEmpty()) {
             return Optional.empty();
         }
         @SuppressWarnings("unchecked")
