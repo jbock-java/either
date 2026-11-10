@@ -7,8 +7,8 @@ import java.util.function.Function;
 /**
  * Internal implementation of a Right-Either.
  *
- * @param <L> the type of the LHS value
- * @param <R> the type of the RHS value
+ * @param <L> any arbitrary type
+ * @param <R> value type
  */
 record Right<L, R>(R value) implements Either<L, R> {
 
@@ -33,13 +33,6 @@ record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
-    public <R2> Either<L, R2> flatMap(Function<? super R, ? extends Either<? extends L, ? extends R2>> mapper) {
-        @SuppressWarnings("unchecked")
-        Either<L, R2> result = (Either<L, R2>) mapper.apply(value);
-        return result;
-    }
-
-    @Override
     public Either<L, R> filter(Function<? super R, Optional<? extends L>> predicate) {
         Optional<? extends L> test = predicate.apply(value);
         if (test.isEmpty()) {
@@ -50,13 +43,6 @@ record Right<L, R>(R value) implements Either<L, R> {
 
     @Override
     public <L2> Either<L2, R> mapLeft(Function<? super L, ? extends L2> mapper) {
-        @SuppressWarnings("unchecked")
-        Either<L2, R> result = (Either<L2, R>) this;
-        return result;
-    }
-
-    @Override
-    public <L2> Either<L2, R> flatMapLeft(Function<? super L, ? extends Either<? extends L2, ? extends R>> mapper) {
         @SuppressWarnings("unchecked")
         Either<L2, R> result = (Either<L2, R>) this;
         return result;
@@ -75,11 +61,6 @@ record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
-    public Either<L, R> filterLeft(Function<? super L, Optional<? extends R>> predicate) {
-        return this;
-    }
-
-    @Override
     public <U> U fold(
             Function<? super L, ? extends U> leftMapper,
             Function<? super R, ? extends U> rightMapper) {
@@ -92,7 +73,22 @@ record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
-    public <X extends Throwable> R orElseThrow(Function<? super L, ? extends X> exceptionSupplier) {
+    public L getLeftOrElseThrow(Function<? super R, ? extends RuntimeException> exceptionSupplier) {
+        throw exceptionSupplier.apply(value);
+    }
+
+    @Override
+    public L getLeftOrElseThrow() {
+        throw new UnsupportedOperationException("not a Right");
+    }
+
+    @Override
+    public R getRightOrElseThrow(Function<? super L, ? extends RuntimeException> exceptionSupplier) {
+        return value;
+    }
+
+    @Override
+    public R getRightOrElseThrow() {
         return value;
     }
 }

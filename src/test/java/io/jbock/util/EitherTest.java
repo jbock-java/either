@@ -68,31 +68,11 @@ class EitherTest {
     }
 
     @Test
-    void testFlatMap() {
-        Either<Integer, String> left = Either.left(2);
-        assertSame(left, left.flatMap(s -> Either.right("1"))); // Left is unchanged
-        assertSame(left, left.flatMap(s -> Either.left(1))); // Left is unchanged
-        Either<Integer, String> right = Either.right("1");
-        assertEquals(Either.right(11), right.flatMap(s -> Either.right(11)));
-        assertEquals(Either.left(11), right.flatMap(s -> Either.left(11)));
-    }
-
-    @Test
     void testMapLeft() {
         Either<String, ?> left = Either.left("1");
         assertEquals(Either.left(1), left.mapLeft(Integer::parseInt));
         Either<String, String> right = Either.right("1");
         assertSame(right, right.mapLeft(s -> "A")); // Right is unchanged
-    }
-
-    @Test
-    void testFlatMapLeft() {
-        Either<String, Integer> left = Either.left("1");
-        assertEquals(Either.left(11), left.flatMapLeft(s -> Either.left(11)));
-        assertEquals(Either.right(11), left.flatMapLeft(s -> Either.right(11)));
-        Either<String, Integer> right = Either.right(2);
-        assertSame(right, right.flatMapLeft(s -> Either.left("1"))); // Right is unchanged
-        assertSame(right, right.flatMapLeft(s -> Either.right(1))); // Right is unchanged
     }
 
     @Test
@@ -103,16 +83,6 @@ class EitherTest {
         Either<String, String> right = Either.right("1");
         assertEquals(Either.left("2"), right.filter(r -> Optional.of("2")));
         assertEquals(right, right.filter(r -> Optional.empty()));
-    }
-
-    @Test
-    void testFilterLeft() {
-        Either<?, String> right = Either.right("1");
-        assertSame(right, right.filterLeft(r -> Optional.of("2"))); // Right is unchanged
-        assertSame(right, right.filterLeft(r -> Optional.empty())); // Right is unchanged
-        Either<String, String> left = Either.left("1");
-        assertEquals(Either.right("2"), left.filterLeft(r -> Optional.of("2")));
-        assertEquals(left, left.filterLeft(r -> Optional.empty()));
     }
 
     @Test
@@ -137,10 +107,10 @@ class EitherTest {
     @Test
     void testOrElseThrow() {
         Either<String, ?> left = Either.left("1");
-        IOException x = assertThrows(IOException.class, () -> left.orElseThrow(IOException::new));
+        IllegalStateException x = assertThrows(IllegalStateException.class, () -> left.getRightOrElseThrow(IllegalStateException::new));
         assertEquals("1", x.getMessage());
         Either<String, String> right = Either.right("2");
-        assertEquals("2", right.orElseThrow(IllegalArgumentException::new));
+        assertEquals("2", right.getRightOrElseThrow(IllegalArgumentException::new));
     }
 
     @Test
