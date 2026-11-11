@@ -33,12 +33,19 @@ record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
-    public Either<L, R> filter(Function<? super R, Optional<? extends L>> predicate) {
-        Optional<? extends L> test = predicate.apply(value);
+    public Either<L, R> filter(Function<? super R, Optional<? extends L>> filter) {
+        Optional<? extends L> test = filter.apply(value);
         if (test.isEmpty()) {
             return this;
         }
         return new Left<>(test.orElseThrow());
+    }
+
+    @Override
+    public <R2> Either<L, R2> filterMap(Function<? super R, ? extends Either<L, ? extends R2>> mapper) {
+        @SuppressWarnings("unchecked")
+        Either<L, R2> result = (Either<L, R2>) mapper.apply(value);
+        return result;
     }
 
     @Override

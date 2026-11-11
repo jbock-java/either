@@ -73,11 +73,23 @@ public sealed interface Either<L, R> permits Left, Right {
      * <p>If this is a Right and the predicate function returns a non-empty result,
      * returns a Left containing the result of the predicate function.
      *
-     * @param predicate a function that acts as a filter predicate
+     * @param filter a function that acts as a filter
      * @return filter result
      */
     Either<L, R> filter(
-            Function<? super R, Optional<? extends L>> predicate);
+            Function<? super R, Optional<? extends L>> filter);
+
+    /**
+     * <p>If this is a Right, return the result of applying the mapper
+     * to the value.
+     *
+     * <p>If this is a Left, returns the receiver.
+     *
+     * @param mapper a function that acts as a combination of mapper and filter
+     * @return mapper result
+     */
+    <R2> Either<L, R2> filterMap(
+            Function<? super R, ? extends Either<L, ? extends R2>> mapper);
 
     /**
      * If this is a Left, returns a Left containing the result of applying the mapper function to the value.
@@ -146,7 +158,7 @@ public sealed interface Either<L, R> permits Left, Right {
      *
      * @param exceptionSupplier exception supplier
      * @return the value, if this is a Left
-     * @throws the result of applying {@code exceptionSupplier}, if this is a Right
+     * @throws RuntimeException the result of applying {@code exceptionSupplier}, if this is a Right
      */
     L getLeftOrElseThrow(
             Function<? super R, ? extends RuntimeException> exceptionSupplier);
@@ -168,7 +180,7 @@ public sealed interface Either<L, R> permits Left, Right {
      *
      * @param exceptionSupplier exception supplier
      * @return the value, if this is a Right
-     * @throws the result of applying {@code exceptionSupplier} to the value, if this is a Left
+     * @throws RuntimeException the result of applying {@code exceptionSupplier} to the value, if this is a Left
      */
     R getRightOrElseThrow(
             Function<? super L, ? extends RuntimeException> exceptionSupplier);

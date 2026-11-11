@@ -35,8 +35,13 @@ record Left<L, R>(L value) implements Either<L, R> {
     }
 
     @Override
-    public Either<L, R> filter(Function<? super R, Optional<? extends L>> predicate) {
+    public Either<L, R> filter(Function<? super R, Optional<? extends L>> filter) {
         return this;
+    }
+
+    @Override
+    public <R2> Either<L, R2> filterMap(Function<? super R, ? extends Either<L, ? extends R2>> mapper) {
+        return pinLeft();
     }
 
     @Override
