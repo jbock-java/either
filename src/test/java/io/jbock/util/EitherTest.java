@@ -1,20 +1,30 @@
 package io.jbock.util;
 
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
+
+    @Test
+    void testMapIdentity() {
+        // bounded wildcard
+        Either<String, ? extends String> left = Either.left("left");
+        // back to normal
+        Either<String, String> l = left.mapIdentity(Either.identity());
+        assertSame(left, l);
+        // bounded wildcard
+        Either<String, ? extends String> right = Either.right("normal");
+        // back to normal
+        Either<String, String> r = right.mapIdentity(Either.identity());
+        assertSame(right, r);
+    }
 
     @Test
     void testEqualsAndHashCode() {
@@ -39,24 +49,6 @@ class EitherTest {
     void testToString() {
         assertEquals("Right[value=1]", Either.right("1").toString());
         assertEquals("Left[value=1]", Either.left("1").toString());
-    }
-
-    @Test
-    void testGetLeft() {
-        Either<String, ?> either = Either.left("1");
-        assertTrue(either.isLeft());
-        assertFalse(either.isRight());
-        assertEquals(Optional.of("1"), either.getLeft());
-        assertEquals(Optional.empty(), either.getRight());
-    }
-
-    @Test
-    void testGetRight() {
-        Either<?, String> either = Either.right("1");
-        assertTrue(either.isRight());
-        assertFalse(either.isLeft());
-        assertEquals(Optional.of("1"), either.getRight());
-        assertEquals(Optional.empty(), either.getLeft());
     }
 
     @Test

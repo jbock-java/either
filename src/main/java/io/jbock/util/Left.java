@@ -13,6 +13,11 @@ import java.util.function.Function;
 public record Left<L, R>(L value) implements Either<L, R> {
 
     @Override
+    public <R2> Either<L, R2> mapIdentity(Identity<R, ? extends R2> identity) {
+        return pinLeft();
+    }
+
+    @Override
     public Optional<L> getLeft() {
         return Optional.ofNullable(value);
     }

@@ -13,7 +13,7 @@ import java.util.function.Function;
  * <p>An Either always contains exactly one value, of unknown type,
  * and we will refer to it as <em>the</em> value.
  *
- * <p>An Either is often use to express success or failure.
+ * <p>An Either is often used to express success or failure.
  * If used in this way, by convention,
  * a Right would contain the result of a successful operation,
  * and a Left would contain an object that represents failure.
@@ -22,6 +22,43 @@ import java.util.function.Function;
  * @param <R> the type of the value, if this is a Left
  */
 public sealed interface Either<L, R> permits Left, Right {
+
+    /**
+     * This class is the return type of {@link #identity()}.
+     * No other uses are known.
+     */
+    final class Identity<X, Y> {
+        private Identity() {
+        }
+    }
+
+    /**
+     * The return value of this method
+     * should be passed to {@link #mapIdentity(Identity)}.
+     * No other uses are known.
+     *
+     * @return something to make the compiler happy
+     */
+    static <U> Identity<U, U> identity() {
+        return null;
+    }
+
+    /**
+     * A more efficient alternative to mapping with {@link Function#identity()}.
+     * It is used to convert a (bounded) wildcard Right-type
+     * to a normal type. See {@code EitherTest} to get the idea.
+     *
+     * <p>Note: Always pass {@link Either#identity()} to this method.
+     * In particular, passing {@code null} to this method
+     * may result in an unsafe cast and runtime exceptions.
+     * Please don't do this.
+     *
+     * @param identity an identity instance
+     * @return the receiver
+     * @param <R2> new Right-Type; if you pass identity, it will not be
+     *            substantially different from the old Right-Type
+     */
+    <R2> Either<L, R2> mapIdentity(Identity<R, ? extends R2> identity);
 
     /**
      * Returns a Left containing the given value.
