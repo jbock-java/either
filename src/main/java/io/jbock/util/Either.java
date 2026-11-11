@@ -1,22 +1,22 @@
 package io.jbock.util;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * A class that acts as a container for a value of one of two types.
- * An Either could be a &quot;Left&quot; or a &quot;Right&quot;,
+ * This class serves as a container for a value of unknown type.
+ *
+ * <p>An Either could be a &quot;Left&quot; or a &quot;Right&quot;,
  * but it can not be &quot;neither&quot; or &quot;both&quot;.
  *
  * <p>An Either always contains exactly one value, of unknown type,
  * and we will refer to it as <em>the</em> value.
  *
- * <p>An Either can be used to express a success or failure case.
+ * <p>An Either is often use to express success or failure.
  * If used in this way, by convention,
- * a Right will contain the result of a successful computation,
- * and a Left contains some kind of error value.
+ * a Right would contain the result of a successful operation,
+ * and a Left would contain an object that represents failure.
  *
  * @param <L> the type of the value, if this is a Right
  * @param <R> the type of the value, if this is a Left
@@ -24,29 +24,27 @@ import java.util.function.Function;
 public sealed interface Either<L, R> permits Left, Right {
 
     /**
-     * Returns a Left containing the given non-{@code null} value.
+     * Returns a Left containing the given value.
      *
      * @param value the value
      * @param <L> the type of the value
      * @param <R> any arbitrary type
      * @return a Left containing the value
-     * @throws NullPointerException if the value is {@code null}
      */
     static <L, R> Either<L, R> left(L value) {
-        return new Left<>(Objects.requireNonNull(value));
+        return new Left<>(value);
     }
 
     /**
-     * Returns a Right containing the given non-{@code null} value.
+     * Returns a Right containing the given value.
      *
      * @param value the value
      * @param <L> any arbitrary type
      * @param <R> the type of the value
      * @return a Right containing the value
-     * @throws NullPointerException if the value is {@code null}
      */
     static <L, R> Either<L, R> right(R value) {
-        return new Right<>(Objects.requireNonNull(value));
+        return new Right<>(value);
     }
 
     /**
@@ -59,7 +57,6 @@ public sealed interface Either<L, R> permits Left, Right {
      * @param <R2> type of the new value
      * @return either the receiver, or a Right containing
      *         the result of applying {@code mapper} to the value
-     * @throws NullPointerException if the {@code mapper} returns {@code null}
      */
     <R2> Either<L, R2> map(
             Function<? super R, ? extends R2> mapper);
@@ -100,7 +97,6 @@ public sealed interface Either<L, R> permits Left, Right {
      * @param <L2> type of the new value
      * @return either the receiver, or a Left containing
      *         the result of applying {@code mapper} to the value
-     * @throws NullPointerException if the {@code mapper} returns {@code null}
      */
     <L2> Either<L2, R> mapLeft(
             Function<? super L, ? extends L2> mapper);
@@ -207,25 +203,39 @@ public sealed interface Either<L, R> permits Left, Right {
      *
      * @return {@code true} if this is a Right, otherwise {@code false}
      */
-    default boolean isRight() {
-        return !isLeft();
-    }
+    boolean isRight();
 
     /**
-     * If this is a Left, returns an {@code Optional} containing the value.
+     * If this is a Left, returns an optional containing the value,
+     * or, if the value is {@code null}, an empty optional.
      *
      * <p>If this is a Right, returns an empty {@code Optional}.
      *
-     * @return an optional containing the value, if this is a Left, otherwise an empty optional
+     * @return an optional containing the value,
+     * if this is a Left, otherwise an empty optional
+     *
+     * @deprecated see javadoc for {@link getRight()}
      */
+    @Deprecated(forRemoval = true)
     Optional<L> getLeft();
 
     /**
-     * If this is a Right, returns an {@code Optional} containing the value.
+     * If this is a Right, returns an optional containing the value,
+     * or, if the value is {@code null}, an empty optional.
      *
      * <p>If this is a Left, returns an empty {@code Optional}.
      *
-     * @return an optional containing the value, if this is a Right, otherwise an empty optional
+     * @return an optional containing the value, if this is a Right,
+     * otherwise an empty optional
+     *
+     * @deprecated This is mostly just an inefficient way to get the value.
+     * Optionals have special treatment for {@code null} and we would
+     * like to stop mimicking this.
+     * If you really need an optional containing the value,
+     * use {@code getRightOrElseThrow()}
+     * after checking with {@code getRight()}}, then wrap with
+     * {@code Optional.ofNullable()}.
      */
+    @Deprecated(forRemoval = true)
     Optional<R> getRight();
 }

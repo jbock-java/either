@@ -5,12 +5,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Internal implementation of a Right-Either.
+ * Container for a Right-Value.
  *
  * @param <L> any arbitrary type
  * @param <R> value type
  */
-record Right<L, R>(R value) implements Either<L, R> {
+public record Right<L, R>(R value) implements Either<L, R> {
 
     @Override
     public Optional<L> getLeft() {
@@ -23,8 +23,13 @@ record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
+    public boolean isRight() {
+        return true;
+    }
+
+    @Override
     public Optional<R> getRight() {
-        return Optional.of(value);
+        return Optional.ofNullable(value);
     }
 
     @Override

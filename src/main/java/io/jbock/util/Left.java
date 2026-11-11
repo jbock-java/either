@@ -5,21 +5,26 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Internal implementation of a Left-Either.
+ * Container for a Left-Value.
  *
  * @param <L> value type
  * @param <R> any arbitrary type
  */
-record Left<L, R>(L value) implements Either<L, R> {
+public record Left<L, R>(L value) implements Either<L, R> {
 
     @Override
     public Optional<L> getLeft() {
-        return Optional.of(value);
+        return Optional.ofNullable(value);
     }
 
     @Override
     public boolean isLeft() {
         return true;
+    }
+
+    @Override
+    public boolean isRight() {
+        return false;
     }
 
     @Override

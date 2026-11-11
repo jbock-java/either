@@ -24,14 +24,15 @@ public final class Eithers {
      * a Right containing all values in the original order,
      * but only if there are no Left instances in the stream.
      * If the stream does contain a Left instance, it discards the Right instances and
-     * accumulates a Left instance, which contains the first LHS value in the stream,
-     * in encounter order.
+     * accumulates a Left instance, which contains the first Left-value in the stream,
+     * in input order.
      *
-     * @param <L> the type of the LHS values in the stream
-     * @param <R> the type of the RHS values in the stream
+     * @param <L> type of the Left-values
+     * @param <R> type of the Right-values
      * @return a {@code Collector} which collects all the input elements into
-     *         a Right containing all RHS values in the stream, or,
-     *         if an LHS value exists, a Left containing the first LHS value
+     *         a Right containing all Right-values in the stream, or,
+     *         if the input contains a Left, the first Left instance
+     *         in the input
      */
     public static <L, R>
     Collector<Either<? extends L, ? extends R>, ?, Either<L, List<R>>>
@@ -51,15 +52,15 @@ public final class Eithers {
      * a Right containing all values in the original order,
      * but only if there are no Left instances in the stream.
      * If the stream does contain a Left instance, it discards the Right instances and
-     * accumulates a Left containing only the LHS values,
-     * in encounter order.
+     * accumulates a Left containing only the Left-values,
+     * in input order.
      *
-     * @param <L> the type of the LHS values in the stream
-     * @param <R> the type of the RHS values in the stream
+     * @param <L> type of the Left-values
+     * @param <R> type of the Right-values
      * @return a {@code Collector} which collects all the input elements into
-     *         a Right containing all RHS values in the stream,
-     *         or, if an LHS value exists, a Left containing a nonempty list
-     *         of all LHS values in the stream
+     *         a Right containing all Right-values in the stream,
+     *         or, if the input contains at least one Left,
+     *         a Left containing a list of all the Left-values in the input
      */
     public static <L, R>
     Collector<Either<? extends L, ? extends R>, ?, Either<List<L>, List<R>>>
