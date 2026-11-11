@@ -1,19 +1,18 @@
 [![either](https://img.shields.io/maven-central/v/io.github.jbock-java/either)](https://central.sonatype.com/artifact/io.github.jbock-java/either)
 
-The `Either` type is closely related to `Optional`, but can have different "failure" states, other than only *empty*.
-`Either` can be used to collect error messages in stream operations,
-or simply as a lightweight alternative to throwing an Exception.
+The `Either` type is related to `Optional`, but can have different "failure" states, other than only *empty*.
+`Either` can be used to collect error messages
+or simply as a typed alternative to exceptions.
 
 There are several popular libraries that offer an `Either` type,
 including [vavr](https://github.com/vavr-io/vavr), [fugue](https://bitbucket.org/atlassian/fugue/src/master/), and [lambda](https://github.com/palatable/lambda).
-This particular `Either` is lightweight, and very easy to work with if you're already familiar with `Optional`.
 
 ### empty to Left
 
-Sometimes, it can be desirable to put *something* into the "empty" value of an `Optional`.
+It can sometimes be desirable to put *something* into the "empty" value of an `Optional`.
 Let's call this "adding a *Left* value", since this value is no longer *empty*.
 Going from Optional to Either is as easy as mapping with `Either::right`,
-followed by an `orElseGet` to supply the Left value:
+followed by `orElseGet` to supply the Left value:
 
 ````java
 Either<String, BigInteger> possiblyPrime = Stream.generate(() -> 
@@ -30,19 +29,16 @@ Repeating the result type in the penultimate line is necessary, due to a limitat
 
 ### Working with Either
 
-`Either` has the familiar methods from `Optional`: `map`, `flatMap` and `filter`.
-These will always return a *Left* value unchanged,
-just like the corresponding methods in `Optional`, which return an *empty* value unchanged.
+`Either` has the `map` and `filter` methods, which are familiar from `Optional`.
+These return a *Left* value unchanged.
 
-Symmetrically there are `mapLeft`, `flatMapLeft` and `filterLeft`, which return a *Right* value unchanged.
-
-Finally there is ~~ifPresentOrElse~~ `ifLeftOrElse` (1.3) and the all-powerful `fold` method,
-as well as `getRight` and `getLeft` to convert back to `Optional`.
+There is `ifLeftOrElse` and `fold`,
+as well as `getRightOrElseThrow()` and `getLeftOrElseThrow()` to get the value.
 
 ### Working with streams
 
-If you have a stream of `Either`, you can search for *Left* values with custom collectors
-`firstFailure` or `allFailures`:
+Given a stream of eithers, you can use the built-in collectors
+`firstFailure` or `allFailures` to search for *Left* values:
 
 ````java
 Either<BigInteger, List<BigInteger>> twoPrimesOrOneComposite = Stream.generate(() ->
@@ -54,11 +50,9 @@ Either<BigInteger, List<BigInteger>> twoPrimesOrOneComposite = Stream.generate((
         .collect(Eithers.firstFailure());
 ````
 
-### Testimonies
+### Sample code
 
-This library grew for several months as part of the [jbock](https://github.com/jbock-java/jbock) project,
-until it was released independently. jbock uses it internally to perform input validation,
-and its generated `parse` method returns an `Either`.
+The [jbock](https://github.com/jbock-java/jbock) compiler uses either internally.
 
 ### Either gang
 
