@@ -49,7 +49,7 @@ public sealed interface Either<L, R> permits Left, Right {
      * @return the receiver
      * @param <T> new Right-Type; this should be equivalent to {@code R}.
      */
-    <T> Either<L, T> mapIdentity(Function<R, ? extends T> identity);
+    <T> Either<L, T> mapIdentity(Function<? super R, ? extends T> identity);
 
     /**
      * Returns a Left containing the given value.
