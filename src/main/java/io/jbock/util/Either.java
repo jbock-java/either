@@ -49,7 +49,7 @@ public sealed interface Either<L, R> permits Left, Right {
      * to a normal type. See {@code EitherTest} to get the idea.
      *
      * <p>Note: Always pass {@link Either#identity()} to this method.
-     * In particular, passing {@code null} to this method
+     * In particular, passing a {@code null} literal to this method
      * may result in an unsafe cast and runtime exceptions.
      * Please don't do this.
      *
@@ -250,10 +250,7 @@ public sealed interface Either<L, R> permits Left, Right {
      *
      * @return an optional containing the value,
      * if this is a Left, otherwise an empty optional
-     *
-     * @deprecated see javadoc for {@link getRight()}
      */
-    @Deprecated(forRemoval = true)
     Optional<L> getLeft();
 
     /**
@@ -262,17 +259,14 @@ public sealed interface Either<L, R> permits Left, Right {
      *
      * <p>If this is a Left, returns an empty {@code Optional}.
      *
+     * <p>Note, this is often misused as an inefficient way
+     * to get the value.  If you really need an optional containing
+     * the value, prefer {@code getRightOrElseThrow()}
+     * after checking with {@code getRight()}}, then wrapping the
+     * result with {@code Optional.ofNullable()}.
+     *
      * @return an optional containing the value, if this is a Right,
      * otherwise an empty optional
-     *
-     * @deprecated This is mostly just an inefficient way to get the value.
-     * Optionals have special treatment for {@code null} and we would
-     * like to stop mimicking this.
-     * If you really need an optional containing the value,
-     * use {@code getRightOrElseThrow()}
-     * after checking with {@code getRight()}}, then wrap with
-     * {@code Optional.ofNullable()}.
      */
-    @Deprecated(forRemoval = true)
     Optional<R> getRight();
 }
