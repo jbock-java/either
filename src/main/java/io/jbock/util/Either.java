@@ -42,7 +42,8 @@ public sealed interface Either<L, R> permits Left, Right {
      * <p>Note: The runtime value of the argument is ignored.
      *
      * <p>Note: The second type argument of the argument function must be
-     * equivalent to {@code R}.
+     * equivalent to {@code R}. Otherwise, the runtime behaviour of this
+     * method is undefined.
      *
      * @param identity a function with return type {@code R}
      * @return the receiver
