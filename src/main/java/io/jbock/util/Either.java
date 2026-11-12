@@ -236,10 +236,13 @@ public sealed interface Either<L, R> permits Left, Right {
      * If this is a Left, returns an optional containing the value,
      * or, if the value is {@code null}, an empty optional.
      *
-     * <p>If this is a Right, returns an empty {@code Optional}.
+     * <p>If this is a Right, returns an empty optional.
      *
-     * @return an optional containing the value,
-     * if this is a Left, otherwise an empty optional
+     * <p>Note, if you need the value,
+     * {@code getLeftOrElseThrow()} is more efficient.
+     *
+     * @return an optional containing the value
+     * or an empty optional
      */
     Optional<L> getLeft();
 
@@ -247,16 +250,13 @@ public sealed interface Either<L, R> permits Left, Right {
      * If this is a Right, returns an optional containing the value,
      * or, if the value is {@code null}, an empty optional.
      *
-     * <p>If this is a Left, returns an empty {@code Optional}.
+     * <p>If this is a Left, returns an empty optional.
      *
-     * <p>Note, this is often misused as an inefficient way
-     * of getting the value. If you really need an optional containing
-     * the value, prefer {@code getRightOrElseThrow()}
-     * after checking with {@code getRight()}}, then wrapping the
-     * result with {@code Optional.ofNullable()}.
+     * <p>Note, if you need the value,
+     * {@code getRightOrElseThrow()} is more efficient.
      *
-     * @return an optional containing the value, if this is a Right,
-     * otherwise an empty optional
+     * @return an optional containing the value
+     * or an empty optional
      */
     Optional<R> getRight();
 }
