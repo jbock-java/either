@@ -13,16 +13,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class EitherTest {
 
     @Test
-    void testMapIdentity() {
-        // bounded wildcard
+    void testIdentity() {
+        // bounded wildcard to String
         Either<String, ? extends String> left = Either.left("left");
-        // back to normal
         Either<String, String> l = left.mapIdentity(Either.identity());
         assertSame(left, l);
-        // bounded wildcard
         Either<String, ? extends String> right = Either.right("normal");
-        // back to normal
         Either<String, String> r = right.mapIdentity(Either.identity());
+        assertSame(right, r);
+    }
+
+    @Test
+    void testReverseIdentity() {
+        // String to bounded wildcard
+        Either<String, String> left = Either.left("left");
+        Either<String, ? extends String> l = left.mapIdentity(Either.identity());
+        assertSame(left, l);
+        Either<String, String> right = Either.right("normal");
+        Either<String, ? extends String> r = right.mapIdentity(Either.identity());
         assertSame(right, r);
     }
 

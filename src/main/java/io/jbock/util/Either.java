@@ -24,41 +24,31 @@ import java.util.function.Function;
 public sealed interface Either<L, R> permits Left, Right {
 
     /**
-     * This class is the return type of {@link #identity()}.
-     * No other uses are known.
-     */
-    final class Identity<X, Y> {
-        private Identity() {
-        }
-    }
-
-    /**
-     * The return value of this method
-     * should be passed to {@link #mapIdentity(Identity)}.
-     * No other uses are known.
+     * This method returns {@code null}.
      *
-     * @return something to make the compiler happy
+     * @return null
      */
-    static <U> Identity<U, U> identity() {
+    static <U> Function<U, U> identity() {
         return null;
     }
 
     /**
-     * A more efficient alternative to mapping with {@link Function#identity()}.
-     * It is used to convert a (bounded) wildcard Right-type
-     * to a normal type. See {@code EitherTest} to get the idea.
+     * This is used to convert from (bounded) wildcard Right-type
+     * to normal (non-wildcard) types, and vice versa.
      *
-     * <p>Note: Always pass {@link Either#identity()} to this method.
-     * In particular, passing a {@code null} literal to this method
-     * may result in an unsafe cast and runtime exceptions.
-     * Please don't do this.
+     * <p>Mapping with {@link Function#identity()} has the same effect,
+     * but this avoids creating a new Right-instance.
      *
-     * @param identity an identity instance
+     * <p>Note: The runtime value of the argument is ignored.
+     *
+     * <p>Note: The second type argument of the argument function must be
+     * equivalent to {@code R}.
+     *
+     * @param identity a function with return type {@code R}
      * @return the receiver
-     * @param <R2> new Right-Type; if you pass identity, it will not be
-     *            substantially different from the old Right-Type
+     * @param <T> new Right-Type; this should be equivalent to {@code R}.
      */
-    <R2> Either<L, R2> mapIdentity(Identity<R, ? extends R2> identity);
+    <T> Either<L, T> mapIdentity(Function<R, ? extends T> identity);
 
     /**
      * Returns a Left containing the given value.
@@ -260,7 +250,7 @@ public sealed interface Either<L, R> permits Left, Right {
      * <p>If this is a Left, returns an empty {@code Optional}.
      *
      * <p>Note, this is often misused as an inefficient way
-     * to get the value.  If you really need an optional containing
+     * of getting the value. If you really need an optional containing
      * the value, prefer {@code getRightOrElseThrow()}
      * after checking with {@code getRight()}}, then wrapping the
      * result with {@code Optional.ofNullable()}.

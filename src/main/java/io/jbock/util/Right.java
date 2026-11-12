@@ -13,7 +13,7 @@ import java.util.function.Function;
 public record Right<L, R>(R value) implements Either<L, R> {
 
     @Override
-    public <R2> Either<L, R2> mapIdentity(Identity<R, ? extends R2> identity) {
+    public <R2> Either<L, R2> mapIdentity(Function<R, ? extends R2> identity) {
         @SuppressWarnings("unchecked")
         Either<L, R2> result = (Either<L, R2>) this;
         return result;
