@@ -52,7 +52,7 @@ public sealed interface Either<L, R> permits Left, Right {
     <T> Either<L, T> mapIdentity(Function<? super R, ? extends T> identity);
 
     /**
-     * Returns a Left containing the given value.
+     * Return a Left containing the given value.
      *
      * @param value the value
      * @param <L> the type of the value
@@ -64,7 +64,7 @@ public sealed interface Either<L, R> permits Left, Right {
     }
 
     /**
-     * Returns a Right containing the given value.
+     * Return a Right containing the given value.
      *
      * @param value the value
      * @param <L> any arbitrary type
@@ -76,10 +76,10 @@ public sealed interface Either<L, R> permits Left, Right {
     }
 
     /**
-     * If this is a Right, returns a Right containing the result of applying
+     * If this is a Right, return a Right containing the result of applying
      * the mapper function to the value.
      *
-     * <p>If this is a Left, returns the receiver.
+     * <p>If this is a Left, do nothing and return the receiver.
      *
      * @param mapper the function to apply to the value, if this is a Right
      * @param <R2> type of the new value
@@ -90,13 +90,13 @@ public sealed interface Either<L, R> permits Left, Right {
             Function<? super R, ? extends R2> mapper);
 
     /**
-     * If this is a Left, returns the receiver.
+     * If this is a Left, return the receiver.
      *
-     * <p>If this is a Right and the predicate function returns an empty result,
-     * returns the receiver.
+     * <p>If this is a Right, and the predicate function returns an empty result,
+     * return the receiver.
      *
-     * <p>If this is a Right and the predicate function returns a non-empty result,
-     * returns a Left containing the result of the predicate function.
+     * <p>If this is a Right, and the predicate function returns a non-empty result,
+     * return a Left containing the result of the predicate function.
      *
      * @param filter a function that acts as a filter
      * @return filter result
@@ -108,7 +108,7 @@ public sealed interface Either<L, R> permits Left, Right {
      * <p>If this is a Right, return the result of applying the mapper
      * to the value.
      *
-     * <p>If this is a Left, returns the receiver.
+     * <p>If this is a Left, do nothing and return the receiver.
      *
      * @param mapper a function that acts as a combination of mapper and filter
      * @return mapper result
@@ -117,9 +117,10 @@ public sealed interface Either<L, R> permits Left, Right {
             Function<? super R, ? extends Either<L, ? extends R2>> mapper);
 
     /**
-     * If this is a Left, returns a Left containing the result of applying the mapper function to the value.
+     * If this is a Left, return a Left containing the result
+     * of applying the mapper function to the value.
      *
-     * <p>If this is a Right, returns the receiver.
+     * <p>If this is a Right, do nothing and return the receiver.
      *
      * @param mapper the function to apply to the value
      * @param <L2> type of the new value
@@ -130,9 +131,9 @@ public sealed interface Either<L, R> permits Left, Right {
             Function<? super L, ? extends L2> mapper);
 
     /**
-     * If this is a Left, returns the receiver.
+     * If this is a Left, return the receiver.
      *
-     * <p>If this is a Right, an exception is thrown.
+     * <p>If this is a Right, throw an exception.
      *
      * @return if this is a Left, the same object unchanged
      * @throws UnsupportedOperationException if this is a Right
@@ -140,7 +141,7 @@ public sealed interface Either<L, R> permits Left, Right {
     <R2> Either<L, R2> pinLeft();
 
     /**
-     * If this is a Right, returns the receiver.
+     * If this is a Right, return the receiver.
      *
      * <p>If this is a Left, an exception is thrown.
      *
@@ -150,9 +151,11 @@ public sealed interface Either<L, R> permits Left, Right {
     <L2> Either<L2, R> pinRight();
 
     /**
-     * If this is a Left, returns the result of applying {@code leftMapper} to the value.
+     * If this is a Left, apply {@code leftMapper} to the value
+     * and return the result.
      *
-     * <p>If this is a Right, returns the result of applying {@code rightMapper} to the value.
+     * <p>If this is a Right, apply {@code rightMapper} to the value
+     * and return the result.
      *
      * @param leftMapper the function to apply if this is a Left
      * @param rightMapper the function to apply if this is a Right
@@ -164,9 +167,9 @@ public sealed interface Either<L, R> permits Left, Right {
             Function<? super R, ? extends U> rightMapper);
 
     /**
-     * If this is a Left, performs the {@code leftAction} with the value.
+     * If this is a Left, perform the {@code leftAction} with the value.
      *
-     * <p>If this is a Right, performs the {@code rightAction} with the value.
+     * <p>If this is a Right, perform the {@code rightAction} with the value.
      *
      * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
@@ -176,9 +179,19 @@ public sealed interface Either<L, R> permits Left, Right {
             Consumer<? super R> rightAction);
 
     /**
-     * If this is a Left, returns the value.
+     * If this is a Right, perform the {@code leftAction} with the value.
      *
-     * <p>If this is a Right, throws the result of applying {@code exceptionSupplier} to the value.
+     * <p>If this is a Left, do nothing.
+     *
+     * @param leftAction action to run if this is a Left
+     * @param rightAction action to run if this is a Right
+     */
+    void ifRight(Consumer<? super R> rightAction);
+
+    /**
+     * If this is a Left, return the value.
+     *
+     * <p>If this is a Right, throw the result of applying {@code exceptionSupplier} to the value.
      *
      * @param exceptionSupplier exception supplier
      * @return the value, if this is a Left
@@ -188,9 +201,9 @@ public sealed interface Either<L, R> permits Left, Right {
             Function<? super R, ? extends RuntimeException> exceptionSupplier);
 
     /**
-     * If this is a Left, returns the value.
+     * If this is a Left, return the value.
      *
-     * <p>If this is a Right, throws an exception.
+     * <p>If this is a Right, throw an exception.
      *
      * @return the value, if this is a Left
      * @throws UnsupportedOperationException if this is a Right
@@ -198,9 +211,9 @@ public sealed interface Either<L, R> permits Left, Right {
     L getLeftOrElseThrow();
 
     /**
-     * If this is a Right, returns the value.
+     * If this is a Right, return the value.
      *
-     * <p>If this is a Left, throws the result of applying {@code exceptionSupplier} to the value.
+     * <p>If this is a Left, throw the result of applying {@code exceptionSupplier} to the value.
      *
      * @param exceptionSupplier exception supplier
      * @return the value, if this is a Right
@@ -210,9 +223,9 @@ public sealed interface Either<L, R> permits Left, Right {
             Function<? super L, ? extends RuntimeException> exceptionSupplier);
 
     /**
-     * If this is a Right, returns the value.
+     * If this is a Right, return the value.
      *
-     * <p>If this is a Left, throws an exception.
+     * <p>If this is a Left, throw an exception.
      *
      * @return the value, if this is a Right
      * @throws UnsupportedOperationException if this is a Left
@@ -234,30 +247,31 @@ public sealed interface Either<L, R> permits Left, Right {
     boolean isRight();
 
     /**
-     * If this is a Left, returns an optional containing the value,
+     * If this is a Left, return an optional containing the value,
      * or, if the value is {@code null}, an empty optional.
      *
-     * <p>If this is a Right, returns an empty optional.
+     * <p>If this is a Right, return an empty optional.
      *
      * <p>Note, if you need the value,
      * {@code getLeftOrElseThrow()} is more efficient.
      *
-     * @return an optional containing the value
-     * or an empty optional
+     * @return an optional containing the non-empty left value,
+     *         or otherwise, an empty optional
      */
     Optional<L> getLeft();
 
     /**
-     * If this is a Right, returns an optional containing the value,
+     * If this is a Right, return an optional containing the value,
      * or, if the value is {@code null}, an empty optional.
      *
-     * <p>If this is a Left, returns an empty optional.
+     * <p>If this is a Left, return an empty optional.
      *
      * <p>Note, if you need the value,
-     * {@code getRightOrElseThrow()} is more efficient.
+     * {@code getRightOrElseThrow()} and {@code ifRight()}
+     * are more efficient.
      *
-     * @return an optional containing the value
-     * or an empty optional
+     * @return an optional containing the non-empty right value,
+     *         or otherwise, an empty optional
      */
     Optional<R> getRight();
 }

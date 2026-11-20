@@ -92,6 +92,11 @@ public record Right<L, R>(R value) implements Either<L, R> {
     }
 
     @Override
+    public void ifRight(Consumer<? super R> rightAction) {
+        rightAction.accept(value);
+    }
+
+    @Override
     public L getLeftOrElseThrow(Function<? super R, ? extends RuntimeException> exceptionSupplier) {
         throw exceptionSupplier.apply(value);
     }
