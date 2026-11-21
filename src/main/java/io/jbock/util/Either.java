@@ -179,23 +179,33 @@ public sealed interface Either<L, R> permits Left, Right {
             Consumer<? super R> rightAction);
 
     /**
-     * If this is a Right, perform the {@code leftAction} with the value.
+     * If this is a Right, perform the {@code rightAction} with the value.
      *
      * <p>If this is a Left, do nothing.
      *
-     * @param leftAction action to run if this is a Left
      * @param rightAction action to run if this is a Right
      */
     void ifRight(Consumer<? super R> rightAction);
 
     /**
+     * If this is a Left, perform the {@code leftAction} with the value.
+     *
+     * <p>If this is a Right, do nothing.
+     *
+     * @param leftAction action to run if this is a Left
+     */
+    void ifLeft(Consumer<? super L> leftAction);
+
+    /**
      * If this is a Left, return the value.
      *
-     * <p>If this is a Right, throw the result of applying {@code exceptionSupplier} to the value.
+     * <p>If this is a Right, apply the {@code exceptionSupplier} to the value
+     * and throw the resulting exception.
      *
      * @param exceptionSupplier exception supplier
      * @return the value, if this is a Left
-     * @throws RuntimeException the result of applying {@code exceptionSupplier}, if this is a Right
+     * @throws RuntimeException the result of applying {@code exceptionSupplier}
+     *                          to the value, if this is a Right
      */
     L getLeftOrElseThrow(
             Function<? super R, ? extends RuntimeException> exceptionSupplier);
@@ -213,11 +223,13 @@ public sealed interface Either<L, R> permits Left, Right {
     /**
      * If this is a Right, return the value.
      *
-     * <p>If this is a Left, throw the result of applying {@code exceptionSupplier} to the value.
+     * <p>If this is  Left, apply the {@code exceptionSupplier} to the value
+     * and throw the resulting exception.
      *
      * @param exceptionSupplier exception supplier
      * @return the value, if this is a Right
-     * @throws RuntimeException the result of applying {@code exceptionSupplier} to the value, if this is a Left
+     * @throws RuntimeException the result of applying {@code exceptionSupplier}
+     *                          to the value, if this is a Left
      */
     R getRightOrElseThrow(
             Function<? super L, ? extends RuntimeException> exceptionSupplier);

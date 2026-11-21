@@ -79,12 +79,19 @@ public record Left<L, R>(L value) implements Either<L, R> {
     }
 
     @Override
-    public void ifLeftOrElse(Consumer<? super L> leftAction, Consumer<? super R> rightAction) {
+    public void ifLeftOrElse(
+            Consumer<? super L> leftAction,
+            Consumer<? super R> rightAction) {
         leftAction.accept(value);
     }
 
     @Override
     public void ifRight(Consumer<? super R> rightAction) {
+    }
+
+    @Override
+    public void ifLeft(Consumer<? super L> leftAction) {
+        leftAction.accept(value);
     }
 
     @Override
