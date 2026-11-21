@@ -13,7 +13,7 @@ import java.util.function.Function;
 public record Right<L, R>(R value) implements Either<L, R> {
 
     @Override
-    public <T> Either<L, T> mapIdentity(Function<? super R, ? extends T> identity) {
+    public <T> Either<L, T> mapIdentity(IdentityFunction<? super R, ? extends T> identity) {
         // T and R must be "equivalent", otherwise the cast is illegal.
         // We could not find a way to express this in the type system
         // without breaking the use case. See the tests.

@@ -13,7 +13,7 @@ import java.util.function.Function;
 public record Left<L, R>(L value) implements Either<L, R> {
 
     @Override
-    public <T> Either<L, T> mapIdentity(Function<? super R, ? extends T> identity) {
+    public <T> Either<L, T> mapIdentity(IdentityFunction<? super R, ? extends T> identity) {
         return pinLeft();
     }
 

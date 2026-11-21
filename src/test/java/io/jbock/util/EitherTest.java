@@ -3,14 +3,12 @@ package io.jbock.util;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
 
@@ -18,10 +16,10 @@ class EitherTest {
     void testIdentity() {
         // bounded wildcard to String
         Either<String, ? extends String> left = Either.left("left");
-        Either<String, String> l = left.mapIdentity(Either.identity());
+        Either<String, String> l = left.mapIdentity(IdentityFunction.identity());
         assertSame(left, l);
         Either<String, ? extends String> right = Either.right("normal");
-        Either<String, String> r = right.mapIdentity(Either.identity());
+        Either<String, String> r = right.mapIdentity(IdentityFunction.identity());
         assertSame(right, r);
     }
 
@@ -29,10 +27,10 @@ class EitherTest {
     void testReverseIdentity() {
         // String to bounded wildcard
         Either<String, String> left = Either.left("left");
-        Either<String, ? extends String> l = left.mapIdentity(Either.identity());
+        Either<String, ? extends String> l = left.mapIdentity(IdentityFunction.identity());
         assertSame(left, l);
         Either<String, String> right = Either.right("normal");
-        Either<String, ? extends String> r = right.mapIdentity(Either.identity());
+        Either<String, ? extends String> r = right.mapIdentity(IdentityFunction.identity());
         assertSame(right, r);
     }
 
@@ -40,9 +38,12 @@ class EitherTest {
     void testIdentityCastFails() {
         Either<String, String> right = Either.right("right");
         // Illegal use of mapIdentity: the function's return type
-        // is not "equivalent" to String
-        Either<String, Integer> r = right.mapIdentity(s -> 1);
-        Object value = r.getRightOrElseThrow();
+        // is not equivalent to its input type.
+        // It is possible to declare such a function
+        // by using a null literal.
+        IdentityFunction<String, Integer> badFunction = null;
+        Either<String, Integer> badEither = right.mapIdentity(badFunction);
+        Object value = badEither.getRightOrElseThrow();
         // Obviously not an Integer, this is bad!
         assertEquals("right", value);
     }

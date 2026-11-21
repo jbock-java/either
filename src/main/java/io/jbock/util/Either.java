@@ -24,15 +24,6 @@ import java.util.function.Function;
 public sealed interface Either<L, R> permits Left, Right {
 
     /**
-     * This method returns {@code null}.
-     *
-     * @return null
-     */
-    static <U> Function<U, U> identity() {
-        return null;
-    }
-
-    /**
      * <h3>All users of this method must ensure that the return type of
      * the parameter function is &quot;equivalent&quot; to {@code R}.
      *
@@ -41,16 +32,16 @@ public sealed interface Either<L, R> permits Left, Right {
      * <p>This method can be used to convert from (bounded) wildcard Right-type
      * to normal (non-wildcard) types, and vice versa.
      *
-     * <p>Mapping with {@link Function#identity()} would have the same effect.
-     * But this is more efficient, since it avoids creating a new Right-instance.
+     * <p>Note, mapping with {@link Function#identity()} has the same effect.
+     * But this is inefficient, since it creates a new Right-instance.
      *
      * <p>Note: The runtime value of the argument is ignored and may be {@code null}.
      *
      * @param identity a function with return type {@code R}
      * @return the receiver
-     * @param <T> new Right-Type; this should be equivalent to {@code R}.
+     * @param <T> new Right type; must be equivalent to {@code R}.
      */
-    <T> Either<L, T> mapIdentity(Function<? super R, ? extends T> identity);
+    <T> Either<L, T> mapIdentity(IdentityFunction<? super R, ? extends T> identity);
 
     /**
      * Return a Left containing the given value.
