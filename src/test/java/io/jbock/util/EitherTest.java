@@ -35,17 +35,14 @@ class EitherTest {
     }
 
     @Test
-    void testIdentityCastFails() {
+    void testIdentityNull() {
         Either<String, String> right = Either.right("right");
         // Illegal use of mapIdentity: the function's return type
         // is not equivalent to its input type.
         // It is possible to declare such a function
-        // by using a null literal.
+        // by using a null literal, so null must be rejected.
         IdentityFunction<String, Integer> badFunction = null;
-        Either<String, Integer> badEither = right.mapIdentity(badFunction);
-        Object value = badEither.getRightOrElseThrow();
-        // Obviously not an Integer, this is bad!
-        assertEquals("right", value);
+        assertThrows(NullPointerException.class, () -> right.mapIdentity(badFunction));
     }
 
     @Test

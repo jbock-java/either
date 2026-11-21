@@ -2,16 +2,19 @@ package io.jbock.util;
 
 public final class IdentityFunction<X, Y> {
 
+    private static final IdentityFunction<?, ?> INSTANCE = new IdentityFunction<>();
+
     /**
-     * This method returns {@code null}.
+     * This method returns an identity function.
      *
-     * @return null
+     * @return identity function
      */
     public static <U> IdentityFunction<U, U> identity() {
-        return null;
+        @SuppressWarnings("unchecked")
+        IdentityFunction<U, U> result = (IdentityFunction<U, U>) INSTANCE;
+        return result;
     }
 
-    // no instances
     private IdentityFunction() {
     }
 }
