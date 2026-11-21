@@ -3,12 +3,14 @@ package io.jbock.util;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EitherTest {
 
@@ -32,6 +34,17 @@ class EitherTest {
         Either<String, String> right = Either.right("normal");
         Either<String, ? extends String> r = right.mapIdentity(Either.identity());
         assertSame(right, r);
+    }
+
+    @Test
+    void testIdentityCastFails() {
+        Either<String, String> right = Either.right("right");
+        // Illegal use of mapIdentity: the function's return type
+        // is not "equivalent" to String
+        Either<String, Integer> r = right.mapIdentity(s -> 1);
+        Object value = r.getRightOrElseThrow();
+        // Obviously not an Integer, this is bad!
+        assertEquals("right", value);
     }
 
     @Test

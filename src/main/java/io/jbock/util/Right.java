@@ -14,8 +14,8 @@ public record Right<L, R>(R value) implements Either<L, R> {
 
     @Override
     public <T> Either<L, T> mapIdentity(Function<? super R, ? extends T> identity) {
-        // This assumes T and R are "equivalent", otherwise the cast may fail.
-        // But we could not figure out a way to express this in the type system
+        // T and R must be "equivalent", otherwise the cast is illegal.
+        // We could not find a way to express this in the type system
         // without breaking the use case. See the tests.
         @SuppressWarnings("unchecked")
         Either<L, T> result = (Either<L, T>) this;

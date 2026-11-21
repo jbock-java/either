@@ -33,17 +33,18 @@ public sealed interface Either<L, R> permits Left, Right {
     }
 
     /**
-     * This is used to convert from (bounded) wildcard Right-type
+     * <h3>All users of this method must ensure that the return type of
+     * the parameter function is &quot;equivalent&quot; to {@code R}.
+     *
+     * <p>In all other cases, the runtime behaviour is undefined.
+     *
+     * <p>This method can be used to convert from (bounded) wildcard Right-type
      * to normal (non-wildcard) types, and vice versa.
      *
-     * <p>Mapping with {@link Function#identity()} has the same effect,
-     * but this avoids creating a new Right-instance.
+     * <p>Mapping with {@link Function#identity()} would have the same effect.
+     * But this is more efficient, since it avoids creating a new Right-instance.
      *
-     * <p>Note: The runtime value of the argument is ignored.
-     *
-     * <p>Note: The second type argument of the argument function must be
-     * equivalent to {@code R}. Otherwise, the runtime behaviour of this
-     * method is undefined.
+     * <p>Note: The runtime value of the argument is ignored and may be {@code null}.
      *
      * @param identity a function with return type {@code R}
      * @return the receiver
