@@ -111,6 +111,6 @@ public record Left<L, R>(L value) implements Either<L, R> {
 
     @Override
     public R getRightOrElseThrow() {
-        throw new UnsupportedOperationException("not a Left");
+        throw new UnsupportedOperationException("not a Right");
     }
 }
